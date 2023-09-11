@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.Entities.Company;
+using Transportathon._0x80072F78.Core.Entities.ForCompany;
 
 namespace Transportathon._0x80072F78.Infrastructure.Configurations.Company;
 
-public class CommentConfiguration : IEntityTypeConfiguration<Core.Entities.Company.Comment>
+public class CommentConfiguration : IEntityTypeConfiguration<Core.Entities.ForCompany.Comment>
 {
     public void Configure(EntityTypeBuilder<Comment> builder)
     {

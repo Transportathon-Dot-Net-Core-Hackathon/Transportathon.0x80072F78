@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Transportathon._0x80072F78.Core.Entities;
-using Transportathon._0x80072F78.Core.Entities.Company;
+using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
 
 namespace Transportathon._0x80072F78.Infrastructure.Database;
