@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Transportathon._0x80072F78.Core.Entities;
+using Transportathon._0x80072F78.Core.Entities.Company;
 using Transportathon._0x80072F78.Core.Entities.Identity;
 
 namespace Transportathon._0x80072F78.Infrastructure.Database;
@@ -15,6 +17,15 @@ AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserTok
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Driver> Drivers { get; set; }
+    public DbSet<Team> Teams { get; set; }
+    public DbSet<TeamWorker> TeamWorkers { get; set; }
+    public DbSet<Vehicle> Vehicles { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<TransportationRequest> TransportationRequests { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
