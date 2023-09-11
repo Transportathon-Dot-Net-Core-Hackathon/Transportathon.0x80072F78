@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.Entities.Company;
+using Transportathon._0x80072F78.Core.Entities.ForCompany;
 
 namespace Transportathon._0x80072F78.Infrastructure.Configurations.Company;
 
-public class CompanyConfiguration : IEntityTypeConfiguration<Core.Entities.Company.Company>
+public class CompanyConfiguration : IEntityTypeConfiguration<Core.Entities.ForCompany.Company>
 {
-    public void Configure(EntityTypeBuilder<Core.Entities.Company.Company> builder)
+    public void Configure(EntityTypeBuilder<Core.Entities.ForCompany.Company> builder)
     {
         builder.ToTable("Companies");
         builder.Property(x => x.CompanyName).IsRequired().HasMaxLength(100);

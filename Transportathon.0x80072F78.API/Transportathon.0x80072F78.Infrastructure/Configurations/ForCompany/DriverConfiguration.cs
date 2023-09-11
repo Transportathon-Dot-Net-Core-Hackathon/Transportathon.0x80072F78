@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.Entities.Company;
+using Transportathon._0x80072F78.Core.Entities.ForCompany;
 
 namespace Transportathon._0x80072F78.Infrastructure.Configurations.Company;
 
-public class DriverConfiguration : IEntityTypeConfiguration<Core.Entities.Company.Driver>
+public class DriverConfiguration : IEntityTypeConfiguration<Core.Entities.ForCompany.Driver>
 {
     public void Configure(EntityTypeBuilder<Driver> builder)
     {

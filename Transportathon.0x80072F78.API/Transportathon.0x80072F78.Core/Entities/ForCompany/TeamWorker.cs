@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transportathon._0x80072F78.Core.Entities.Company;
+namespace Transportathon._0x80072F78.Core.Entities.ForCompany;
 
 public class TeamWorker : BaseEntity<Guid>
 {
