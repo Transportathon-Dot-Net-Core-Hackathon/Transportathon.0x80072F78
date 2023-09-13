@@ -54,7 +54,7 @@ public class TransportationRequestService : ITransportationRequestService
 
     public async Task<CustomResponse<TransportationRequestDTO>> GetByIdAsync(Guid id)
     {
-        var transportationRequest = await _unitOfWork.TransportationRequestRepository.GetByIdAsync(id);
+        var transportationRequest = await _unitOfWork.TransportationRequestRepository.GetTransportationRequestByIdAsync(id);
         if (transportationRequest == null)
         {
             return CustomResponse<TransportationRequestDTO>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));

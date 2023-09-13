@@ -14,12 +14,24 @@ namespace Transportathon._0x80072F78.Infrastructure.Repository;
 
 public class TransportationRequestRepository : AsyncRepository<TransportationRequest>, ITransportationRequestRepository
 {
-    private readonly DbContext _dbContext;
+    private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
 
-    public TransportationRequestRepository(AppDbContext dbContext, IFilter filter) : base(dbContext, filter)
+    public TransportationRequestRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
     {
-        _dbContext = dbContext;
+        _appDbContext = appDbContext;
         _filter = filter;
     }
+
+    public async Task<TransportationRequest> GetTransportationRequestByIdAsync(Guid id)
+    {
+        TransportationRequest transportationRequest = await _appDbContext.TransportationRequests.AsNoTracking()
+                                                              .Where(x => x.Id == id).
+                                                               Include(x => x.OutputAddress).
+                                                               Include(x => x.DestinationAddress).
+                                                               FirstOrDefaultAsync();
+        if (transportationRequest == null) return null;
+        return transportationRequest;
+    }
+
 }
