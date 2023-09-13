@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transportathon._0x80072F78.Core.DTOs.Company;
+namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
-public class CommentDTO
+public class CommentUpdateDTO
 {
     public Guid Id { get; set; }
     //public Guid Gereklibelge { get; set; } // son belge

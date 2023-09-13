@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.Entities.Identity;
 
-namespace Transportathon._0x80072F78.Core.DTOs.Company;
+namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
-public class CompanyDTO
+public class CompanyUpdateDTO
 {
     public Guid Id { get; set; }
     public string CompanyName { get; set; }
@@ -23,5 +22,4 @@ public class CompanyDTO
     public string PostCode { get; set; }
     public string VKN { get; set; }
     public Guid CompanyUsersId { get; set; }
-    public AspNetUser CompanyUsers { get; set; }
 }

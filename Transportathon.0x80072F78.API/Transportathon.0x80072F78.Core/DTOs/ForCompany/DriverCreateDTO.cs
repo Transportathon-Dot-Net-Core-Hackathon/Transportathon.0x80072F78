@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transportathon._0x80072F78.Core.DTOs.Company;
+namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
-public class DriverDTO
+public class DriverCreateDTO
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string Experience { get; set; }

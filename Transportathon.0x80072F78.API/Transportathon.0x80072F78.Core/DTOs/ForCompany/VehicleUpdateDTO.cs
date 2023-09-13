@@ -7,7 +7,7 @@ using Transportathon._0x80072F78.Core.Entities.ForCompany;
 
 namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
-public class VehicleDTO
+public class VehicleUpdateDTO
 {
     public Guid Id { get; set; }
     public int VehicleType { get; set; }
@@ -16,5 +16,4 @@ public class VehicleDTO
     public string VehicleWeightCapacity { get; set; }
     public int VehicleStatus { get; set; }
     public Guid DriverId { get; set; }
-    public Driver Driver { get; set; }
 }
