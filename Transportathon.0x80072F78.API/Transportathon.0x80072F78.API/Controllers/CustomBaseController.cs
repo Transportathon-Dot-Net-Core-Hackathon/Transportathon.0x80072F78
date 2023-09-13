@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Transportathon._0x80072F78.Shared.Models;
 
 namespace Transportathon._0x80072F78.API.Controllers;
 
+[Authorize]
 [Route("api/Transportathon/[controller]/[action]")]
 [ApiController]
 public class CustomBaseController : ControllerBase
