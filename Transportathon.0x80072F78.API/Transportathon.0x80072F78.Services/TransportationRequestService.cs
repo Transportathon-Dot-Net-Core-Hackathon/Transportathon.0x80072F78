@@ -46,9 +46,9 @@ public class TransportationRequestService : ITransportationRequestService
         return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
     }
 
-    public async Task<CustomResponse<List<TransportationRequestDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<TransportationRequestDTO>>> GetAllAsync(bool relational)
     {
-        var transportationRequestList = await _unitOfWork.TransportationRequestRepository.GetAllAsync();
+        var transportationRequestList = await _unitOfWork.TransportationRequestRepository.GetAllTransportationRequestAsync(relational);
         return CustomResponse<List<TransportationRequestDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<TransportationRequestDTO>>(transportationRequestList));
     }
 

@@ -23,6 +23,25 @@ public class TransportationRequestRepository : AsyncRepository<TransportationReq
         _filter = filter;
     }
 
+    public async Task<List<TransportationRequest>> GetAllTransportationRequestAsync(bool relational = false)
+    {
+        List<TransportationRequest> stokBelgeList = new();
+        IQueryable<TransportationRequest> query = _appDbContext.TransportationRequests.AsNoTracking();
+        var entityType = _appDbContext.Model.FindEntityType(typeof(TransportationRequest));
+
+        if (relational == true)
+        {
+            stokBelgeList = await query.Include(x => x.OutputAddress)
+                                       .Include(x => x.DestinationAddress).ToListAsync();
+        }
+        else
+        {
+            stokBelgeList = await query.ToListAsync();
+        }
+
+        return stokBelgeList;
+    }
+
     public async Task<TransportationRequest> GetTransportationRequestByIdAsync(Guid id)
     {
         TransportationRequest transportationRequest = await _appDbContext.TransportationRequests.AsNoTracking()
