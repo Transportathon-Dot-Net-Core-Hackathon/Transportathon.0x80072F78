@@ -8,16 +8,13 @@ using Transportathon._0x80072F78.Core.Entities;
 
 namespace Transportathon._0x80072F78.Core.DTOs;
 
-public class TransportationRequestDTO
+public class TransportationRequestUpdateDTO
 {
     public Guid Id { get; set; }
     public int RequestType { get; set; }
     public Guid OutputAddressId { get; set; }
-    public Address OutputAddress { get; set; }
     public Guid DestinationAddressId { get; set; }
-    public Address DestinationAddress { get; set; }
     public Guid UserId { get; set; }
-    public AspNetUser User { get; set; }
     public float Weight { get; set; }
     public float Volume { get; set; }
     public string Note { get; set; }

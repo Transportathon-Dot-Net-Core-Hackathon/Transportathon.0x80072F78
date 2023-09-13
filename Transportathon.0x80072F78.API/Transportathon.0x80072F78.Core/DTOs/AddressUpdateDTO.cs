@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transportathon._0x80072F78.Core.DTOs;
 
-public class AddressDTO
+public class AddressUpdateDTO
 {
     public Guid Id { get; set; }
     public int AddressType { get; set; }
