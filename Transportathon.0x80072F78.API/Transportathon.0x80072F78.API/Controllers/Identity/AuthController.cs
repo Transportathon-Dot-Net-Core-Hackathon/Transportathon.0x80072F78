@@ -16,6 +16,7 @@ public class AuthController : CustomBaseController
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<ActionResult<CustomResponse<TokenDTO>>> Login(LoginDTO loginDTO)
     {
         return CreateActionResultInstance(await _authService.CreateTokenAsync(loginDTO));
