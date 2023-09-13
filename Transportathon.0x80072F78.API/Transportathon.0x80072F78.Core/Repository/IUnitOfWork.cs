@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
 using Transportathon._0x80072F78.Shared.Interfaces;
 
@@ -14,6 +15,15 @@ public interface IUnitOfWork : IDisposable
     #region Repositories
 
     IAsyncRepository<UserRefreshToken> UserRefreshTokenRepository { get; }
+    ICompanyRepository CompanyRepository { get; }
+    ICommentRepository CommentRepository  { get; }
+    IDriverRepository DriverRepository  { get; }
+    ITeamRepository TeamRepository  { get; }
+    ITeamWorkerRepository TeamWorkerRepository  { get; }
+    IVehicleRepository VehicleRepository  { get; }
+    IAddressRepository AddressRepository  { get; }
+    ITransportationRequestRepository TransportationRequestRepository  { get; }
+
 
     #endregion
 
