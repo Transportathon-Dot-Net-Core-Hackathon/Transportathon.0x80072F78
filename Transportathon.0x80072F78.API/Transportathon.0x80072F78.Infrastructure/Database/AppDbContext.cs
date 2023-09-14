@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Transportathon._0x80072F78.Core.Entities;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
+using Transportathon._0x80072F78.Core.Entities.Offer;
 
 namespace Transportathon._0x80072F78.Infrastructure.Database;
 
@@ -25,6 +26,7 @@ AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserTok
     public DbSet<Vehicle> Vehicles { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<TransportationRequest> TransportationRequests { get; set; }
+    public DbSet<Offer> Offers { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -15,13 +15,14 @@ public class UnitOfWork : IUnitOfWork
     private readonly IServiceProvider _serviceProvider;
     private IAsyncRepository<UserRefreshToken> _userRefreshTokenRepository;
     private ICompanyRepository _companyRepository;
-    private ICommentRepository _commentRepository ;
-    private IDriverRepository _driverRepository ;
-    private ITeamRepository _teamRepository ;
-    private ITeamWorkerRepository _teamWorkerRepository ;
-    private IVehicleRepository _vehicleRepository ;
-    private IAddressRepository _addressRepository ;
-    private ITransportationRequestRepository _transportationRequestRepository ;
+    private ICommentRepository _commentRepository;
+    private IDriverRepository _driverRepository;
+    private ITeamRepository _teamRepository;
+    private ITeamWorkerRepository _teamWorkerRepository;
+    private IVehicleRepository _vehicleRepository;
+    private IAddressRepository _addressRepository;
+    private ITransportationRequestRepository _transportationRequestRepository;
+    private IOfferRepository _offerRepository;
 
     public UnitOfWork(IServiceProvider serviceProvider, IAsyncRepository<UserRefreshToken> userRefreshTokenRepository, AppDbContext appDbContext)
     {
@@ -145,6 +146,17 @@ public class UnitOfWork : IUnitOfWork
             if (_transportationRequestRepository == default(ITransportationRequestRepository))
                 _transportationRequestRepository = _serviceProvider.GetRequiredService<ITransportationRequestRepository>();
             return _transportationRequestRepository;
+        }
+
+    }
+
+    public IOfferRepository OfferRepository
+    {
+        get
+        {
+            if (_offerRepository == default(IOfferRepository))
+                _offerRepository = _serviceProvider.GetRequiredService<IOfferRepository>();
+            return _offerRepository;
         }
 
     }

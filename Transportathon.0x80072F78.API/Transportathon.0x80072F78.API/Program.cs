@@ -15,6 +15,7 @@ using Transportathon._0x80072F78.Services.Identity;
 using Transportathon._0x80072F78.Shared.Constants;
 using Transportathon._0x80072F78.Services.ForCompany;
 using Transportathon._0x80072F78.Services;
+using Transportathon._0x80072F78.Services.Offer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,8 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ITransportationRequestRepository, TransportationRequestRepository>();
 builder.Services.AddScoped<ITransportationRequestService, TransportationRequestService>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<IOfferService, OfferService>();
 
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetSection(ConfigurationSectionConst.ConnectionStrings)[ConfigurationEntityConst.AppDbConnection]!, "Postgres", tags: new[] { "readiness" });
 
