@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Transportathon.0x80072F78.Core\Transportathon._0x80072F78.Core.csproj" />
   </ItemGroup>
 

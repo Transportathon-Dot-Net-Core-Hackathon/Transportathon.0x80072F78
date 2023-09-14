@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <UserSecretsId>22241422-7890-42de-8c9a-c428bf0e5352</UserSecretsId>
     <RootNamespace>Transportathon._0x80072F78.API</RootNamespace>
   </PropertyGroup>
 

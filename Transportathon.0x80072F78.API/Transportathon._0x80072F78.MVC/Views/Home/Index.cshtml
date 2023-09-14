@@ -1,0 +1,27 @@
+﻿@using Transportathon._0x80072F78.Core.Entities.ForCompany
+@model List<Driver>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<table class=" table table-bordered">
+    <tr>
+        <th>DriverId</th>
+        <th>Name</th>
+        <th>Delete</th>
+        <th>Update</th>
+    </tr>
+    <tbody>
+         @foreach (var driver in Model)
+        {
+            <tr>
+                <td>@driver.Id</td>
+                <td>@driver.Name</td>
+                <td><a asp-action="DeleteDriver" asp-route-id="@driver.Id" class="btn btn-danger">Delete</a></td>
+                <td><a href="/Home/UpdateDriver/" class=" btn btn-success">Update</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="/Home/CreateDriver/" class=" btn btn-primary">Create</a>
