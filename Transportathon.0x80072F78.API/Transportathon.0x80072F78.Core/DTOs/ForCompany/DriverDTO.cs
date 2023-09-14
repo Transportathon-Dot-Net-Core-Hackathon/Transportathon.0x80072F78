@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transportathon._0x80072F78.Core.DTOs.Company;
+namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
 public class DriverDTO
 {

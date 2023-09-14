@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 
-namespace Transportathon._0x80072F78.Core.DTOs.Company;
+namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
 public class TeamDTO
 {

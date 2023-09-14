@@ -2,7 +2,7 @@
 using Transportathon._0x80072F78.Core.Entities.Identity;
 using Transportathon._0x80072F78.Core.Entities;
 using Transportathon._0x80072F78.Core.DTOs.Identity;
-using Transportathon._0x80072F78.Core.DTOs.Company;
+using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
 namespace Transportathon._0x80072F78.Core.DTOs;
 

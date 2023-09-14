@@ -7,15 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Core", "Transportathon.0x80072F78.Core\Transportathon._0x80072F78.Core.csproj", "{3D5CBBEF-3C7B-40BA-BDD1-B3DEA78CF75C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.Infrastructure", "Transportathon.0x80072F78.Infrastructure\Transportathon._0x80072F78.Infrastructure.csproj", "{9934CA79-D08B-449A-B05D-23FDDB78E9B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Infrastructure", "Transportathon.0x80072F78.Infrastructure\Transportathon._0x80072F78.Infrastructure.csproj", "{9934CA79-D08B-449A-B05D-23FDDB78E9B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.Core.Infrastructure", "Transportathon.0x80072F78.Core.Infrastructure\Transportathon._0x80072F78.Core.Infrastructure.csproj", "{B2CEB748-0A49-4C93-80BC-2A6974C6E0C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Core.Infrastructure", "Transportathon.0x80072F78.Core.Infrastructure\Transportathon._0x80072F78.Core.Infrastructure.csproj", "{B2CEB748-0A49-4C93-80BC-2A6974C6E0C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.Services", "Transportathon.0x80072F78.Services\Transportathon._0x80072F78.Services.csproj", "{D7811C76-93A9-4D95-89CE-A9120064D65B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Services", "Transportathon.0x80072F78.Services\Transportathon._0x80072F78.Services.csproj", "{D7811C76-93A9-4D95-89CE-A9120064D65B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.Shared", "Transportathon.0x80072F78.Shared\Transportathon._0x80072F78.Shared.csproj", "{CEF56639-6CC8-4DC6-A49C-CE20E0CC5258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Shared", "Transportathon.0x80072F78.Shared\Transportathon._0x80072F78.Shared.csproj", "{CEF56639-6CC8-4DC6-A49C-CE20E0CC5258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.Tests", "Transportathon.0x80072F78.Tests\Transportathon._0x80072F78.Tests.csproj", "{FC890E6F-2829-4388-AC7A-C5BDAA718507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transportathon._0x80072F78.Tests", "Transportathon.0x80072F78.Tests\Transportathon._0x80072F78.Tests.csproj", "{FC890E6F-2829-4388-AC7A-C5BDAA718507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transportathon._0x80072F78.MVC", "Transportathon._0x80072F78.MVC\Transportathon._0x80072F78.MVC.csproj", "{DF3246BA-A808-4F74-9EA3-B7D8962EAC78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{FC890E6F-2829-4388-AC7A-C5BDAA718507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC890E6F-2829-4388-AC7A-C5BDAA718507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC890E6F-2829-4388-AC7A-C5BDAA718507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF3246BA-A808-4F74-9EA3-B7D8962EAC78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3246BA-A808-4F74-9EA3-B7D8962EAC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF3246BA-A808-4F74-9EA3-B7D8962EAC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF3246BA-A808-4F74-9EA3-B7D8962EAC78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

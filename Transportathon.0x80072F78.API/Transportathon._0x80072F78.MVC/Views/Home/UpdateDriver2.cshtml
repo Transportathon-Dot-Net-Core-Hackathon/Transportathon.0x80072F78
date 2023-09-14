@@ -1,0 +1,43 @@
+﻿@using Transportathon._0x80072F78.Core.DTOs.ForCompany
+@model DriverUpdateDTO
+@{
+    ViewData["Title"] = "UpdateDriver";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-group" method="post" action="/Home/UpdateDriver">
+    <div>
+        <label>Driver name</label>
+        <input type="text" class="form-control" name="Name" />
+    </div>
+    <div>
+        <label>Driver surname</label>
+        <input type="text" class="form-control" name="Surname" />
+    </div>
+    <div>
+        <label>Driver exp</label>
+        <input type="text" class="form-control" name="Experience" />
+    </div>
+    <div>
+        <label>Driver phone</label>
+        <input type="text" class="form-control" name="PhoneNumber" />
+    </div>
+    <div>
+        <label>Driver mail</label>
+        <input type="text" class="form-control" name="EMail" />
+    </div>
+    <div>
+        <label>Driver age</label>
+        <input type="text" class="form-control" name="Age" />
+    </div>
+    <div>
+        <label>Driver license</label>
+        <input type="text" class="form-control" name="DrivingLicenceTypes" />
+    </div>
+    <div style="margin-top:15px">
+        <button class="btn btn-info" type="submit">Update Driver</button>
+    </div>
+
+</form>
+
+
