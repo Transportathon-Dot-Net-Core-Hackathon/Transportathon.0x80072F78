@@ -6,6 +6,7 @@ using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities;
 using Transportathon._0x80072F78.Core.DTOs;
+using Transportathon._0x80072F78.Core.Entities.Offer;
 
 namespace Transportathon._0x80072F78.Core.Mapping;
 
@@ -50,5 +51,8 @@ public class MappingProfile : Profile
         CreateMap<TransportationRequest, TransportationRequestDTO>().ReverseMap();
         CreateMap<TransportationRequest, TransportationRequestCreateDTO>().ReverseMap();
         CreateMap<TransportationRequest, TransportationRequestUpdateDTO>().ReverseMap();
+        CreateMap<Offer, OfferDTO>().ReverseMap();
+        CreateMap<Offer, OfferCreateDTO>().ReverseMap();
+        CreateMap<Offer, OfferUpdateDTO>().ReverseMap();
     }
 }

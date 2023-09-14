@@ -9,7 +9,7 @@ using Transportathon._0x80072F78.Core.Entities;
 
 namespace Transportathon._0x80072F78.Infrastructure.Configurations;
 
-public class AddressConfiguration : IEntityTypeConfiguration<Core.Entities.Address>
+public class AddressConfiguration : IEntityTypeConfiguration<Address>
 {
     public void Configure(EntityTypeBuilder<Address> builder)
     {

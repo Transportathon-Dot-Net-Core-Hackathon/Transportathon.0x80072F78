@@ -23,6 +23,7 @@ public interface IUnitOfWork : IDisposable
     IVehicleRepository VehicleRepository  { get; }
     IAddressRepository AddressRepository  { get; }
     ITransportationRequestRepository TransportationRequestRepository  { get; }
+    IOfferRepository OfferRepository { get; }
 
 
     #endregion
