@@ -56,6 +56,18 @@ builder.Services.AddScoped<ITransportationRequestService, TransportationRequestS
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 builder.Services.AddScoped<IOfferService, OfferService>();
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "_allow",
+        builder => builder.WithOrigins("http://localhost:4201")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(host => true));
+});
+
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetSection(ConfigurationSectionConst.ConnectionStrings)[ConfigurationEntityConst.AppDbConnection]!, "Postgres", tags: new[] { "readiness" });
 
 builder.Services.AddExConfigOptions(builder.Configuration);
@@ -69,7 +81,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("_allow");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
