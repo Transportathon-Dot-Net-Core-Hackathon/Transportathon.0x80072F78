@@ -29,7 +29,7 @@ public class OfferRepository : AsyncRepository<Offer>, IOfferRepository
                                         .Include(x => x.Company)
                                         .Include(x => x.User)
                                         .Include(x => x.Team)
-                                        .Include(x => x.Driver).ToListAsync();
+                                        .Include(x => x.Vehicle).ToListAsync();
         }
         else
         {
@@ -47,7 +47,7 @@ public class OfferRepository : AsyncRepository<Offer>, IOfferRepository
                                                                 .Include(x => x.Company)
                                                                 .Include(x => x.User)
                                                                 .Include(x => x.Team)
-                                                                .Include(x => x.Driver).FirstOrDefaultAsync();
+                                                                .Include(x => x.Vehicle).FirstOrDefaultAsync();
         if (offerRequest == null) return null;
         return offerRequest;
     }

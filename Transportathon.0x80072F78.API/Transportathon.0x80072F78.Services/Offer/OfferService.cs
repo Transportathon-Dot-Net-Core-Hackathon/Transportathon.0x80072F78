@@ -75,7 +75,7 @@ public class OfferService : IOfferService
     public async Task<CustomResponse<List<OfferDTO>>> MyOffersAsync()
     {
         var offerList = await _unitOfWork.OfferRepository.GetAllByFilterAsync(x => x.UserId == Guid.Parse(_httpContextData.UserId)
-                                                    ,null, $"{nameof(Core.Entities.Offer.Offer.Company)},{nameof(Core.Entities.Offer.Offer.User)},{nameof(Core.Entities.Offer.Offer.Team)},{nameof(Core.Entities.Offer.Offer.Driver)},{nameof(Core.Entities.Offer.Offer.TransportationRequest)}");
+                                                    ,null, $"{nameof(Core.Entities.Offer.Offer.Company)},{nameof(Core.Entities.Offer.Offer.User)},{nameof(Core.Entities.Offer.Offer.Team)},{nameof(Core.Entities.Offer.Offer.Vehicle)},{nameof(Core.Entities.Offer.Offer.TransportationRequest)}");
         if (offerList == null)
             return CustomResponse<List<OfferDTO>>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.Offer.Offer));
 

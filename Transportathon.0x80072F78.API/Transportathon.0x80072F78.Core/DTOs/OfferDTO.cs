@@ -1,8 +1,6 @@
-﻿using Transportathon._0x80072F78.Core.Entities.ForCompany;
-using Transportathon._0x80072F78.Core.Entities.Identity;
-using Transportathon._0x80072F78.Core.Entities;
-using Transportathon._0x80072F78.Core.DTOs.Identity;
+﻿using Transportathon._0x80072F78.Core.DTOs.Identity;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
+using Transportathon._0x80072F78.Core.Enums;
 
 namespace Transportathon._0x80072F78.Core.DTOs;
 
@@ -16,10 +14,11 @@ public class OfferDTO
     public UserDTO User { get; set; }
     public Guid TeamId { get; set; }
     public TeamDTO Team { get; set; }
-    public Guid DriverId { get; set; }
-    public DriverDTO Driver { get; set; }
-    public DateTime OfferTime { get; set; }
+    public Guid VehicleId { get; set; }
+    public VehicleDTO Vehicle { get; set; }
     public decimal Price { get; set; }
     public string? Note { get; set; }
-    public int Status { get; set; }
+    public DateTime TransportationDate { get; set; }
+    public DateTime OfferTime { get; set; }
+    public DocumentStatus Status { get; set; }
 }

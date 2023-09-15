@@ -1,5 +1,6 @@
 ﻿using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
+using Transportathon._0x80072F78.Core.Enums;
 
 namespace Transportathon._0x80072F78.Core.Entities.Offer;
 
@@ -13,10 +14,11 @@ public class Offer : BaseEntity<Guid>
     public AspNetUser User { get; set; }
     public Guid TeamId { get; set; }
     public Team Team { get; set; }
-    public Guid DriverId { get; set; }
-    public Driver Driver { get; set; }
-    public DateTime OfferTime { get; set; }
+    public Guid VehicleId { get; set; }
+    public Vehicle Vehicle { get; set; }
     public decimal Price { get; set; }
     public string? Note { get; set; }
-    public int Status { get; set; }
+    public DateTime TransportationDate { get; set; }
+    public DateTime OfferTime { get; set; }
+    public DocumentStatus Status { get; set; }
 }

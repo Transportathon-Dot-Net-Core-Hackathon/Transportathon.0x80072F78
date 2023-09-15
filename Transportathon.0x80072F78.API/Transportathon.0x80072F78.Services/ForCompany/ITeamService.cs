@@ -11,7 +11,7 @@ namespace Transportathon._0x80072F78.Services.ForCompany;
 
 public interface ITeamService
 {
-    Task<CustomResponse<List<TeamDTO>>> GetAllAsync();
+    Task<CustomResponse<List<TeamDTO>>> GetAllAsync(bool relational);
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
     Task<CustomResponse<NoContent>> UpdateAsync(TeamUpdateDTO teamUpdateDTO );
     Task<CustomResponse<NoContent>> CreateAsync(TeamCreateDTO teamCreateDTO );

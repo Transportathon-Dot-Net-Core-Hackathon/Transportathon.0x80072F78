@@ -23,7 +23,7 @@ public class TeamRepository : AsyncRepository<Team>, ITeamRepository
         _filter = filter;
     }
 
-    public async Task<List<Team>> GetAllTeamAsync(bool relational)
+    public async Task<List<Team>> GetAllTeamAsync(bool relational = true)
     {
         List<Team> teamList = new();
         IQueryable<Team> query = _appDbContext.Teams.AsNoTracking();
@@ -31,8 +31,7 @@ public class TeamRepository : AsyncRepository<Team>, ITeamRepository
 
         if (relational == true)
         {
-            teamList = await query.Include(x => x.Company)
-                                       .Include(x => x.TeamWorkers).ToListAsync();
+            teamList = await query.Include(x => x.Company).ToListAsync();
         }
         else
         {
@@ -47,7 +46,6 @@ public class TeamRepository : AsyncRepository<Team>, ITeamRepository
         Team team = await _appDbContext.Teams.AsNoTracking()
                                                               .Where(x => x.Id == id).
                                                                Include(x => x.Company).
-                                                               Include(x => x.TeamWorkers).
                                                                FirstOrDefaultAsync();
         if (team == null) return null;
         return team;
