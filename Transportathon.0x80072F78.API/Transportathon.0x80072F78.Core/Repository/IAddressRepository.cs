@@ -11,4 +11,6 @@ namespace Transportathon._0x80072F78.Core.Repository;
 
 public interface IAddressRepository : IAsyncRepository<Address>
 {
+    Task<List<Address>> GetAllAddressAsync(bool relational);
+    Task<Address> GetAddressByIdAsync(Guid id);
 }

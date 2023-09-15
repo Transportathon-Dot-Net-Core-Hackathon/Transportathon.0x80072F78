@@ -16,5 +16,5 @@ public class VehicleDTO
     public string VehicleWeightCapacity { get; set; }
     public int VehicleStatus { get; set; }
     public Guid DriverId { get; set; }
-    public Driver Driver { get; set; }
+    public DriverDTO Driver { get; set; }
 }
