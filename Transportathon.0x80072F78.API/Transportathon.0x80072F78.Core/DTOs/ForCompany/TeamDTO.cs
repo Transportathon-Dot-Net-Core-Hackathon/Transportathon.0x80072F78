@@ -11,7 +11,7 @@ public class TeamDTO
 {
     public Guid Id { get; set; }
     public Guid CompanyId { get; set; }
-    public Entities.ForCompany.Company Company { get; set; }
+    public CompanyDTO Company { get; set; }
     public List<Guid> TeamWorkerId { get; set; }
-    public List<TeamWorker> TeamWorkers { get; set; }
+    public List<TeamWorkerDTO> TeamWorkers { get; set; }
 }
