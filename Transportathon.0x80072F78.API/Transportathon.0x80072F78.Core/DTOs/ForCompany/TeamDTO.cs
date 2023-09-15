@@ -9,6 +9,7 @@ namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
 public class TeamDTO
 {
+    public string Name { get; set; }
     public Guid Id { get; set; }
     public Guid CompanyId { get; set; }
     public CompanyDTO Company { get; set; }

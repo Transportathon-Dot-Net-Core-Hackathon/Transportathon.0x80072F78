@@ -18,7 +18,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Core.Entities.ForCo
         builder.Property(x => x.Title).IsRequired().HasMaxLength(100);
         builder.Property(x => x.Name).IsRequired().HasMaxLength(40);
         builder.Property(x => x.Surname).IsRequired().HasMaxLength(40);
-        builder.Property(x => x.Address).IsRequired().HasMaxLength(150);
+        builder.Property(x => x.City).IsRequired().HasMaxLength(150);
         builder.Property(x => x.Street).IsRequired().HasMaxLength(100);
         builder.Property(x => x.Alley).IsRequired().HasMaxLength(100);
         builder.Property(x => x.District).IsRequired().HasMaxLength(100);
@@ -28,6 +28,13 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Core.Entities.ForCo
         builder.Property(x => x.VKN).IsRequired().HasMaxLength(100);
         builder.Property(x => x.CompanyUsersId).IsRequired();
 
-        builder.HasOne(c => c.CompanyUsers).WithMany().HasForeignKey(c=>c.CompanyUsersId);
+
+        #region Virtual Fields
+
+        builder.Ignore(k => k.AverageScore);
+
+        #endregion
+
+        builder.HasOne(c => c.CompanyUsers).WithMany().HasForeignKey(c=>c.CompanyUsersId).OnDelete(DeleteBehavior.NoAction);
     }
 }

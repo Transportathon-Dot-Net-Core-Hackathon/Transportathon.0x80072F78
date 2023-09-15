@@ -1,11 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Repository;
@@ -27,8 +21,10 @@ public class TeamService : ITeamService
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamCreateDTO teamCreateDTO)
     {
         var mappedTeam = _mapper.Map<Team>(teamCreateDTO);
+
         await _unitOfWork.TeamRepository.CreateAsync(mappedTeam);
         await _unitOfWork.SaveAsync();
+
         return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
     }
 
@@ -44,15 +40,15 @@ public class TeamService : ITeamService
         return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
     }
 
-    public async Task<CustomResponse<List<TeamDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<TeamDTO>>> GetAllAsync(bool relational)
     {
-        var teamList = await _unitOfWork.TeamRepository.GetAllAsync();
+        var teamList = await _unitOfWork.TeamRepository.GetAllTeamAsync(relational);
         return CustomResponse<List<TeamDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<TeamDTO>>(teamList));
     }
 
     public async Task<CustomResponse<TeamDTO>> GetByIdAsync(Guid id)
     {
-        var team = await _unitOfWork.TeamRepository.GetByIdAsync(id);
+        var team = await _unitOfWork.TeamRepository.GetTeamByIdAsync(id);
         if (team == null)
         {
             return CustomResponse<TeamDTO>.Fail(StatusCodes.Status404NotFound, nameof(team));

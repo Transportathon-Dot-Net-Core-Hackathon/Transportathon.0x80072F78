@@ -13,7 +13,7 @@ public interface ITeamWorkerService
 {
     Task<CustomResponse<List<TeamWorkerDTO>>> GetAllAsync();
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
-    Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO );
-    Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO );
+    Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO);
+    Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO);
     Task<CustomResponse<TeamWorkerDTO>> GetByIdAsync(Guid id);
 }

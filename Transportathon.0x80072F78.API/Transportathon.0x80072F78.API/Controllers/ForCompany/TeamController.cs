@@ -33,9 +33,9 @@ namespace Transportathon._0x80072F78.API.Controllers.Company
 
         }
         [HttpGet]
-        public async Task<ActionResult<CustomResponse<NoContent>>> GetAll()
+        public async Task<ActionResult<CustomResponse<NoContent>>> GetAll(bool relational)
         {
-            return CreateActionResultInstance(await _teamService.GetAllAsync());
+            return CreateActionResultInstance(await _teamService.GetAllAsync(relational));
 
         }
         [HttpGet("{id:Guid}")]

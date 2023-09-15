@@ -17,8 +17,11 @@ public class TeamWorkerConfiguration : IEntityTypeConfiguration<Core.Entities.Fo
         builder.Property(x => x.Name).IsRequired().HasMaxLength(40);
         builder.Property(x => x.Surname).IsRequired().HasMaxLength(40);
         builder.Property(x => x.Age).IsRequired().HasMaxLength(5);
-        builder.Property(x => x.PhoneNumber).IsRequired().HasMaxLength(15);
-        builder.Property(x => x.EMail).IsRequired().HasMaxLength(50);
-        builder.Property(x => x.Experience).IsRequired().HasMaxLength(10);
+        builder.Property(x => x.PhoneNumber).HasMaxLength(15);
+        builder.Property(x => x.EMail).HasMaxLength(50);
+        builder.Property(x => x.Experience).HasMaxLength(10);
+        builder.Property(x => x.TeamId).IsRequired();
+
+        builder.HasOne(c => c.Team).WithMany(x=>x.TeamWorkers).OnDelete(DeleteBehavior.NoAction);
     }
 }
