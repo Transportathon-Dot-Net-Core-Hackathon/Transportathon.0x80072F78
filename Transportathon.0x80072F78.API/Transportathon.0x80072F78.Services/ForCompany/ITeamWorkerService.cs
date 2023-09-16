@@ -17,5 +17,4 @@ public interface ITeamWorkerService
     Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO);
     Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO);
     Task<CustomResponse<TeamWorkerDTO>> GetByIdAsync(Guid id);
-    Task<CustomResponse<List<TeamWorkerDTO>>> MyTeamWorkersAsync();
 }

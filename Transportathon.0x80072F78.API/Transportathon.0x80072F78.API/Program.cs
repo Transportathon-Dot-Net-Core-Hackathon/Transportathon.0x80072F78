@@ -55,6 +55,8 @@ builder.Services.AddScoped<ITransportationRequestRepository, TransportationReque
 builder.Services.AddScoped<ITransportationRequestService, TransportationRequestService>();
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 
 builder.Services.AddCors(options =>

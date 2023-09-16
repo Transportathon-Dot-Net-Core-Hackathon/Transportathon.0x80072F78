@@ -20,8 +20,5 @@ public class TeamWorkerConfiguration : IEntityTypeConfiguration<Core.Entities.Fo
         builder.Property(x => x.PhoneNumber).HasMaxLength(15);
         builder.Property(x => x.EMail).HasMaxLength(50);
         builder.Property(x => x.Experience).HasMaxLength(10);
-        builder.Property(x => x.TeamId).IsRequired();
-
-        builder.HasOne(c => c.Team).WithMany(x=>x.TeamWorkers).OnDelete(DeleteBehavior.NoAction);
     }
 }

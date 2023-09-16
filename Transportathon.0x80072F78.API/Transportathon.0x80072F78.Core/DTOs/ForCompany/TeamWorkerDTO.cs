@@ -17,5 +17,4 @@ public class TeamWorkerDTO
     public string? PhoneNumber { get; set; }
     public string? EMail { get; set; }
     public string? Experience { get; set; }
-    public Guid TeamId { get; set; }
 }

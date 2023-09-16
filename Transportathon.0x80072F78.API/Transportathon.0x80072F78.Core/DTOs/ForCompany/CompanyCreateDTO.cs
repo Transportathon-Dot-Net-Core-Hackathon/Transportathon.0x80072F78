@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transportathon._0x80072F78.Core.DTOs.Identity;
 using Transportathon._0x80072F78.Core.Entities.Identity;
 
 namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
@@ -21,5 +22,6 @@ public class CompanyCreateDTO
     public string ApartmentNumber { get; set; }
     public string PostCode { get; set; }
     public string VKN { get; set; }
+    public CreateUserDTO User { get; set; }
     public Guid CompanyUsersId { get; set; }
 }

@@ -30,11 +30,6 @@ public class TeamWorkerService : ITeamWorkerService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO)
     {
-        var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamWorkerCreateDTO.TeamId);
-        if (!team)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
-        }
         var mappedTeamWorker = _mapper.Map<TeamWorker>(teamWorkerCreateDTO);
         await _unitOfWork.TeamWorkerRepository.CreateAsync(mappedTeamWorker);
         await _unitOfWork.SaveAsync();
@@ -70,29 +65,12 @@ public class TeamWorkerService : ITeamWorkerService
         return CustomResponse<TeamWorkerDTO>.Success(StatusCodes.Status200OK, teamWorkerDTO);
     }
 
-    public async Task<CustomResponse<List<TeamWorkerDTO>>> MyTeamWorkersAsync()
-    {
-        var teamWorkerList = await _unitOfWork.TeamWorkerRepository.GetAllByFilterAsync(x => x.UserId == Guid.Parse(_httpContextData.UserId)
-                                                    , null, $"{nameof(Core.Entities.ForCompany.TeamWorker.Team)}");
-        if (teamWorkerList == null)
-            return CustomResponse<List<TeamWorkerDTO>>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.ForCompany.TeamWorker));
-
-        var result = _mapper.Map<List<TeamWorkerDTO>>(teamWorkerList);
-
-        return CustomResponse<List<TeamWorkerDTO>>.Success(StatusCodes.Status200OK, result);
-    }
-
     public async Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO)
     {
         var teamWorker = await _unitOfWork.TeamWorkerRepository.AnyAsync(x => x.Id == teamWorkerUpdateDTO.Id);
         if (!teamWorker)
         {
             return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(teamWorker));
-        }
-        var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamWorkerUpdateDTO.TeamId);
-        if (!team)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
         }
         var result = _mapper.Map<TeamWorker>(teamWorkerUpdateDTO);
         await _unitOfWork.TeamWorkerRepository.UpdateAsync(result);
