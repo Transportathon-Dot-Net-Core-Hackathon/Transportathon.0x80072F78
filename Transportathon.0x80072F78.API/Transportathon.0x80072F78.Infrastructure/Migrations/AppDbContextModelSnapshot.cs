@@ -89,7 +89,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("OfferId")
                         .HasColumnType("uuid");
@@ -183,6 +183,25 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     b.HasIndex("CompanyUsersId");
 
                     b.ToTable("Companies", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6c266446-0a71-4469-8f1f-f26a3f4d3f81"),
+                            Alley = "Bursa Sokak",
+                            ApartmentNumber = "1",
+                            BuildingNumber = "1",
+                            City = "Bursa Şehri",
+                            CompanyName = "Serhat Co.",
+                            CompanyUsersId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            District = "Bursa İlçesi",
+                            Name = "Serhat",
+                            PostCode = "16200",
+                            Street = "Bursa Mahallesi",
+                            Surname = "Sandıkçıoğlu",
+                            Title = "LTD",
+                            VKN = "1234567890"
+                        });
                 });
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.ForCompany.Driver", b =>
@@ -227,6 +246,68 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Drivers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0b1fe640-2efc-4b68-9f61-6efc5cf2170d"),
+                            Age = 26,
+                            DrivingLicenceTypes = new[] { 0 },
+                            EMail = "driver@driver.com",
+                            Experience = "6",
+                            Name = "DriverName1",
+                            PhoneNumber = "1234567890",
+                            Surname = "DriverSurname1",
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921")
+                        },
+                        new
+                        {
+                            Id = new Guid("bad1d1c9-0f00-4919-9587-8ff8e9629fa2"),
+                            Age = 27,
+                            DrivingLicenceTypes = new[] { 0 },
+                            EMail = "driver@driver.com",
+                            Experience = "7",
+                            Name = "DriverName2",
+                            PhoneNumber = "1234567890",
+                            Surname = "DriverSurname2",
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921")
+                        },
+                        new
+                        {
+                            Id = new Guid("6600291f-27d7-4e92-9583-2401f22198a0"),
+                            Age = 28,
+                            DrivingLicenceTypes = new[] { 0 },
+                            EMail = "driver@driver.com",
+                            Experience = "8",
+                            Name = "DriverName3",
+                            PhoneNumber = "1234567890",
+                            Surname = "DriverSurname3",
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921")
+                        },
+                        new
+                        {
+                            Id = new Guid("c7f69770-5444-4146-a0d4-b2604caf50d6"),
+                            Age = 29,
+                            DrivingLicenceTypes = new[] { 0 },
+                            EMail = "driver@driver.com",
+                            Experience = "9",
+                            Name = "DriverName4",
+                            PhoneNumber = "1234567890",
+                            Surname = "DriverSurname4",
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921")
+                        },
+                        new
+                        {
+                            Id = new Guid("99e157be-a0be-4c44-8e1c-7d7e4b4a361f"),
+                            Age = 30,
+                            DrivingLicenceTypes = new[] { 2, 0 },
+                            EMail = "driver@driver.com",
+                            Experience = "10",
+                            Name = "DriverName5",
+                            PhoneNumber = "1234567890",
+                            Surname = "DriverSurname5",
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921")
+                        });
                 });
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.ForCompany.Team", b =>
@@ -341,6 +422,63 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     b.HasIndex("DriverId");
 
                     b.ToTable("Vehicles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("90859246-16bf-4a5a-bcb4-b5ec6d9216db"),
+                            DriverId = new Guid("0b1fe640-2efc-4b68-9f61-6efc5cf2170d"),
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            VehicleLicensePlate = "16 SI 51",
+                            VehicleStatus = 1,
+                            VehicleType = 1,
+                            VehicleVolumeCapacity = "50",
+                            VehicleWeightCapacity = "1200"
+                        },
+                        new
+                        {
+                            Id = new Guid("a8a867a4-d940-437f-8d8c-57894b4aba72"),
+                            DriverId = new Guid("bad1d1c9-0f00-4919-9587-8ff8e9629fa2"),
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            VehicleLicensePlate = "16 SI 52",
+                            VehicleStatus = 0,
+                            VehicleType = 1,
+                            VehicleVolumeCapacity = "50",
+                            VehicleWeightCapacity = "1200"
+                        },
+                        new
+                        {
+                            Id = new Guid("cd859506-6838-45d3-9c1f-0e05b03b5ac0"),
+                            DriverId = new Guid("6600291f-27d7-4e92-9583-2401f22198a0"),
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            VehicleLicensePlate = "16 SI 53",
+                            VehicleStatus = 3,
+                            VehicleType = 0,
+                            VehicleVolumeCapacity = "50",
+                            VehicleWeightCapacity = "1200"
+                        },
+                        new
+                        {
+                            Id = new Guid("0dee1f1f-38bb-4e9b-836e-4ea38a5510ef"),
+                            DriverId = new Guid("c7f69770-5444-4146-a0d4-b2604caf50d6"),
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            VehicleLicensePlate = "16 SI 54",
+                            VehicleStatus = 0,
+                            VehicleType = 1,
+                            VehicleVolumeCapacity = "50",
+                            VehicleWeightCapacity = "1200"
+                        },
+                        new
+                        {
+                            Id = new Guid("ce101cee-f038-4c62-a736-c738dd94ff8b"),
+                            DriverId = new Guid("99e157be-a0be-4c44-8e1c-7d7e4b4a361f"),
+                            UserId = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            VehicleLicensePlate = "16 SI 55",
+                            VehicleStatus = 3,
+                            VehicleType = 0,
+                            VehicleVolumeCapacity = "50",
+                            VehicleWeightCapacity = "1200"
+                        });
                 });
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.Identity.AspNetRole", b =>
@@ -476,6 +614,40 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("07078181-35ae-4f45-a8d1-c3327efdc0d4"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ce8fa663-5f7b-424a-b1b5-45628fe65950",
+                            Email = "ismailabanoz1213@gmail.com",
+                            EmailConfirmed = false,
+                            FamilyName = "Abanoz",
+                            FirstName = "İsmail",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "ISMAIL",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG11jDyWLS6Lfww+1TqmBWrocPKEaruQ8y7i1xEPx32/ZCcs1O8zpXqmkZwjyYbU2g==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "ismail"
+                        },
+                        new
+                        {
+                            Id = new Guid("08d364c6-45fd-434e-83c9-eb363849d921"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e57ff8c8-496c-4cb3-bb8a-684de65231e9",
+                            Email = "serhat16_@hotmail.com",
+                            EmailConfirmed = false,
+                            FamilyName = "Sandıkçıoğlu",
+                            FirstName = "Serhat",
+                            LockoutEnabled = false,
+                            NormalizedUserName = "SERHAT",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMjhrMRn5E1EAO7PZRzvyqo+npO3v0Afbs21+RxLw4rAIXRutHXkFNLv8p1c54Ub2w==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "serhat"
+                        });
                 });
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.Identity.AspNetUserClaim", b =>
@@ -569,7 +741,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("Expiration")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("UserId");
 
@@ -590,7 +762,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("SendTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
@@ -614,7 +786,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<DateTime>("OfferTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
@@ -626,7 +798,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("TransportationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("TransportationRequestId")
                         .HasColumnType("uuid");
@@ -659,7 +831,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid>("DestinationAddressId")
                         .HasColumnType("uuid");
@@ -668,10 +840,10 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("FirstDateRange")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("LastDateRange")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Note")
                         .HasMaxLength(500)

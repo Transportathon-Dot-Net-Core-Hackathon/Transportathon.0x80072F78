@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Transportathon._0x80072F78.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -80,7 +82,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     OfferId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     Score = table.Column<int>(type: "integer", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Text = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -130,7 +132,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     SenderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ReceiverId = table.Column<Guid>(type: "uuid", nullable: false),
                     MessageContent = table.Column<string>(type: "text", nullable: false),
-                    SendTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    SendTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,7 +145,7 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Code = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Expiration = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -297,9 +299,9 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     Weight = table.Column<float>(type: "real", nullable: true),
                     Volume = table.Column<float>(type: "real", nullable: true),
                     Note = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    FirstDateRange = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastDateRange = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FirstDateRange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastDateRange = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DocumentStatus = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -376,8 +378,8 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     VehicleId = table.Column<Guid>(type: "uuid", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     Note = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    TransportationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    OfferTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TransportationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OfferTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -432,6 +434,44 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FamilyName", "FirstName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserImage", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("07078181-35ae-4f45-a8d1-c3327efdc0d4"), 0, "ce8fa663-5f7b-424a-b1b5-45628fe65950", "ismailabanoz1213@gmail.com", false, "Abanoz", "İsmail", false, null, null, "ISMAIL", "AQAAAAIAAYagAAAAEG11jDyWLS6Lfww+1TqmBWrocPKEaruQ8y7i1xEPx32/ZCcs1O8zpXqmkZwjyYbU2g==", null, false, null, false, null, "ismail" },
+                    { new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), 0, "e57ff8c8-496c-4cb3-bb8a-684de65231e9", "serhat16_@hotmail.com", false, "Sandıkçıoğlu", "Serhat", false, null, null, "SERHAT", "AQAAAAIAAYagAAAAEMjhrMRn5E1EAO7PZRzvyqo+npO3v0Afbs21+RxLw4rAIXRutHXkFNLv8p1c54Ub2w==", null, false, null, false, null, "serhat" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Drivers",
+                columns: new[] { "Id", "Age", "DrivingLicenceTypes", "EMail", "Experience", "Name", "PhoneNumber", "Surname", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("0b1fe640-2efc-4b68-9f61-6efc5cf2170d"), 26, new[] { 0 }, "driver@driver.com", "6", "DriverName1", "1234567890", "DriverSurname1", new Guid("08d364c6-45fd-434e-83c9-eb363849d921") },
+                    { new Guid("6600291f-27d7-4e92-9583-2401f22198a0"), 28, new[] { 0 }, "driver@driver.com", "8", "DriverName3", "1234567890", "DriverSurname3", new Guid("08d364c6-45fd-434e-83c9-eb363849d921") },
+                    { new Guid("99e157be-a0be-4c44-8e1c-7d7e4b4a361f"), 30, new[] { 2, 0 }, "driver@driver.com", "10", "DriverName5", "1234567890", "DriverSurname5", new Guid("08d364c6-45fd-434e-83c9-eb363849d921") },
+                    { new Guid("bad1d1c9-0f00-4919-9587-8ff8e9629fa2"), 27, new[] { 0 }, "driver@driver.com", "7", "DriverName2", "1234567890", "DriverSurname2", new Guid("08d364c6-45fd-434e-83c9-eb363849d921") },
+                    { new Guid("c7f69770-5444-4146-a0d4-b2604caf50d6"), 29, new[] { 0 }, "driver@driver.com", "9", "DriverName4", "1234567890", "DriverSurname4", new Guid("08d364c6-45fd-434e-83c9-eb363849d921") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Companies",
+                columns: new[] { "Id", "Alley", "ApartmentNumber", "BuildingNumber", "City", "CompanyName", "CompanyUsersId", "District", "Name", "PostCode", "Street", "Surname", "Title", "VKN" },
+                values: new object[] { new Guid("6c266446-0a71-4469-8f1f-f26a3f4d3f81"), "Bursa Sokak", "1", "1", "Bursa Şehri", "Serhat Co.", new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "Bursa İlçesi", "Serhat", "16200", "Bursa Mahallesi", "Sandıkçıoğlu", "LTD", "1234567890" });
+
+            migrationBuilder.InsertData(
+                table: "Vehicles",
+                columns: new[] { "Id", "DriverId", "UserId", "VehicleLicensePlate", "VehicleStatus", "VehicleType", "VehicleVolumeCapacity", "VehicleWeightCapacity" },
+                values: new object[,]
+                {
+                    { new Guid("0dee1f1f-38bb-4e9b-836e-4ea38a5510ef"), new Guid("c7f69770-5444-4146-a0d4-b2604caf50d6"), new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "16 SI 54", 0, 1, "50", "1200" },
+                    { new Guid("90859246-16bf-4a5a-bcb4-b5ec6d9216db"), new Guid("0b1fe640-2efc-4b68-9f61-6efc5cf2170d"), new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "16 SI 51", 1, 1, "50", "1200" },
+                    { new Guid("a8a867a4-d940-437f-8d8c-57894b4aba72"), new Guid("bad1d1c9-0f00-4919-9587-8ff8e9629fa2"), new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "16 SI 52", 0, 1, "50", "1200" },
+                    { new Guid("cd859506-6838-45d3-9c1f-0e05b03b5ac0"), new Guid("6600291f-27d7-4e92-9583-2401f22198a0"), new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "16 SI 53", 3, 0, "50", "1200" },
+                    { new Guid("ce101cee-f038-4c62-a736-c738dd94ff8b"), new Guid("99e157be-a0be-4c44-8e1c-7d7e4b4a361f"), new Guid("08d364c6-45fd-434e-83c9-eb363849d921"), "16 SI 55", 3, 0, "50", "1200" }
                 });
 
             migrationBuilder.CreateIndex(
