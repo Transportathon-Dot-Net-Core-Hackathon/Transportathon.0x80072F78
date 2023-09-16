@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transportathon._0x80072F78.Core.DTOs;
 using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Repository;
+using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
 
 namespace Transportathon._0x80072F78.Services.ForCompany;
@@ -17,11 +19,13 @@ public class VehicleService : IVehicleService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IHttpContextData _httpContextData;
 
-    public VehicleService(IUnitOfWork unitOfWork, IMapper mapper)
+    public VehicleService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextData httpContextData)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _httpContextData = httpContextData;
     }
 
     public async Task<CustomResponse<NoContent>> CreateAsync(VehicleCreateDTO vehicleCreateDTO)
@@ -59,6 +63,18 @@ public class VehicleService : IVehicleService
         }
         var vehicleDTO = _mapper.Map<VehicleDTO>(vehicle);
         return CustomResponse<VehicleDTO>.Success(StatusCodes.Status200OK, vehicleDTO);
+    }
+
+    public async Task<CustomResponse<List<VehicleDTO>>> MyVehiclesAsync()
+    {
+        var vehicleList = await _unitOfWork.VehicleRepository.GetAllByFilterAsync(x => x.UserId == Guid.Parse(_httpContextData.UserId)
+                                                    , null, $"{nameof(Core.Entities.ForCompany.Vehicle.Driver)}");
+        if (vehicleList == null)
+            return CustomResponse<List<VehicleDTO>>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.ForCompany.Vehicle));
+
+        var result = _mapper.Map<List<VehicleDTO>>(vehicleList);
+
+        return CustomResponse<List<VehicleDTO>>.Success(StatusCodes.Status200OK, result);
     }
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(VehicleUpdateDTO vehicleUpdateDTO)

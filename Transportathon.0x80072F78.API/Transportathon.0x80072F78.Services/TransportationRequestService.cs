@@ -11,6 +11,7 @@ using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Repository;
+using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
 
 namespace Transportathon._0x80072F78.Services;
@@ -19,11 +20,13 @@ public class TransportationRequestService : ITransportationRequestService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IHttpContextData _httpContextData;
 
-    public TransportationRequestService(IUnitOfWork unitOfWork, IMapper mapper)
+    public TransportationRequestService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextData httpContextData)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _httpContextData = httpContextData;
     }
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TransportationRequestCreateDTO transportationRequestCreateDTO)
@@ -61,6 +64,18 @@ public class TransportationRequestService : ITransportationRequestService
         }
         var transportationRequestDTO = _mapper.Map<TransportationRequestDTO>(transportationRequest);
         return CustomResponse<TransportationRequestDTO>.Success(StatusCodes.Status200OK, transportationRequestDTO);
+    }
+
+    public async Task<CustomResponse<List<TransportationRequestDTO>>> MyTransportationRequestsAsync()
+    {
+        var transportationRequestList = await _unitOfWork.TransportationRequestRepository.GetAllByFilterAsync(x => x.UserId == Guid.Parse(_httpContextData.UserId)
+                                                    , null, $"{nameof(Core.Entities.TransportationRequest.OutputAddress)},{nameof(Core.Entities.TransportationRequest.DestinationAddress)},{nameof(Core.Entities.TransportationRequest.User)}");
+        if (transportationRequestList == null)
+            return CustomResponse<List<TransportationRequestDTO>>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.TransportationRequest));
+
+        var result = _mapper.Map<List<TransportationRequestDTO>>(transportationRequestList);
+
+        return CustomResponse<List<TransportationRequestDTO>>.Success(StatusCodes.Status200OK, result);
     }
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TransportationRequestUpdateDTO transportationRequestUpdateDTO)

@@ -11,4 +11,5 @@ public class Vehicle : BaseEntity<Guid>
     public VehicleStatus VehicleStatus { get; set; }
     public Guid DriverId { get; set; }
     public Driver Driver { get; set; }
+    public Guid UserId { get; set; }
 }

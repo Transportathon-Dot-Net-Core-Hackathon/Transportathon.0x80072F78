@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Transportathon._0x80072F78.Core.DTOs;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Repository;
+using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
 
 namespace Transportathon._0x80072F78.Services.ForCompany;
@@ -11,11 +13,13 @@ public class TeamService : ITeamService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IHttpContextData _httpContextData;
 
-    public TeamService(IUnitOfWork unitOfWork, IMapper mapper)
+    public TeamService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextData httpContextData)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _httpContextData = httpContextData;
     }
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamCreateDTO teamCreateDTO)
@@ -55,6 +59,18 @@ public class TeamService : ITeamService
         }
         var teamDTO = _mapper.Map<TeamDTO>(team);
         return CustomResponse<TeamDTO>.Success(StatusCodes.Status200OK, teamDTO);
+    }
+
+    public async Task<CustomResponse<List<TeamDTO>>> MyTeamsAsync()
+    {
+        var teamList = await _unitOfWork.TeamRepository.GetAllByFilterAsync(x => x.UserId == Guid.Parse(_httpContextData.UserId)
+                                                    , null, $"{nameof(Core.Entities.ForCompany.Team.Company)},{nameof(Core.Entities.ForCompany.Team.TeamWorkers)}");
+        if (teamList == null)
+            return CustomResponse<List<TeamDTO>>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.ForCompany.Team));
+
+        var result = _mapper.Map<List<TeamDTO>>(teamList);
+
+        return CustomResponse<List<TeamDTO>>.Success(StatusCodes.Status200OK, result);
     }
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TeamUpdateDTO teamUpdateDTO)
