@@ -41,20 +41,8 @@ public class SeedDataConst
     public const string Driver_Age = "25";
     public const string Driver_UserId = "08d364c6-45fd-434e-83c9-eb363849d921";
 
-   /* public const string Driver_Id_1 = "dfd3f6ba-7423-4f1b-86cf-a0dbf57972c7";
-    public const string Driver_Id_2 = "a7fb1d13-a19b-4010-a581-e188b03eb3a2";
-    public const string Driver_Id_3 = "e6e974a9-5bf2-4dc3-afdd-5a4a32b52f05";
-    public const string Driver_Id_4 = "a9a44745-bff3-4800-bf7a-4b1de6a8f5da";
-    public const string Driver_Id_5 = "c4f193cc-cb49-4f69-88f7-9f6b8e357745";*/
-
     public const string Vehicle_VehicleLicensePlate = "16 SI 5";
     public const string Vehicle_VehicleVolumeCapacity = "50";
     public const string Vehicle_VehicleWeightCapacity = "1200";
     public const string Vehicle_UserId = "08d364c6-45fd-434e-83c9-eb363849d921";
-
-   /* public const string Vehicle_Id_1 = "2ea193e2-08f7-454d-bd5c-3b9b86923889";
-    public const string Vehicle_Id_2 = "9dc3df71-632a-4d1c-9b3f-dcbb4ab8778b";
-    public const string Vehicle_Id_3 = "95cd1f1a-c588-4705-9dac-21c32410f10f";
-    public const string Vehicle_Id_4 = "83dee5bf-4a2f-4c4b-b2a0-a89433f288d6";
-    public const string Vehicle_Id_5 = "6e15e291-4dd8-4d4d-8c5d-d0ef296c9cbf";*/
 }
