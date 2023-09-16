@@ -12,7 +12,7 @@ namespace Transportathon._0x80072F78.Services.ForCompany;
 
 public interface IVehicleService
 {
-    Task<CustomResponse<List<VehicleDTO>>> GetAllAsync();
+    Task<CustomResponse<List<VehicleDTO>>> GetAllAsync(bool relational);
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
     Task<CustomResponse<NoContent>> UpdateAsync(VehicleUpdateDTO vehicleUpdateDTO );
     Task<CustomResponse<NoContent>> CreateAsync(VehicleCreateDTO vehicleCreateDTO );

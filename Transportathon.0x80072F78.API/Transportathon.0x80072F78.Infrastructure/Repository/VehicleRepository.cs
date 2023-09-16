@@ -16,17 +16,19 @@ public class VehicleRepository : AsyncRepository<Vehicle>, IVehicleRepository
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public VehicleRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
+    public VehicleRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<Vehicle>> GetAllVehicleAsync(bool relational)
+    public async Task<List<Vehicle>> GetAllVehicleAsync(bool relational = true)
     {
         List<Vehicle> vehicleList = new();
-        IQueryable<Vehicle> query = _appDbContext.Vehicles.AsNoTracking();
+        IQueryable<Vehicle> query = _appDbContext.Vehicles.Where(x => x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(Vehicle));
 
         if (relational == true)
@@ -45,7 +47,7 @@ public class VehicleRepository : AsyncRepository<Vehicle>, IVehicleRepository
     public async Task<Vehicle> GetVehicleByIdAsync(Guid id)
     {
         Vehicle vehicle = await _appDbContext.Vehicles.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId)).
                                                                Include(x => x.Driver).
                                                                
                                                                FirstOrDefaultAsync();

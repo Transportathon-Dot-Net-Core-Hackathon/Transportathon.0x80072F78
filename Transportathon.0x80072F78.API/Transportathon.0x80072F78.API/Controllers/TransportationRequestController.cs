@@ -6,7 +6,7 @@ using Transportathon._0x80072F78.Core.Repository;
 using Transportathon._0x80072F78.Services;
 using Transportathon._0x80072F78.Shared.Models;
 
-namespace Transportathon._0x80072F78.API.Controllers.Company
+namespace Transportathon._0x80072F78.API.Controllers
 {
     public class TransportationRequestController : CustomBaseController
     {

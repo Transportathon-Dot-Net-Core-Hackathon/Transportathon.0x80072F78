@@ -23,22 +23,42 @@ public class OfferService : IOfferService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(OfferCreateDTO offerCreateDTO)
     {
-        var mappedAddress = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
-        await _unitOfWork.OfferRepository.CreateAsync(mappedAddress);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedAddress = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
+            await _unitOfWork.OfferRepository.CreateAsync(mappedAddress);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var offer = await _unitOfWork.OfferRepository.GetByIdAsync(id);
-        if (offer == null)
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.Offer.Offer));
-
-        await _unitOfWork.OfferRepository.DeleteAsync(offer);
-        await _unitOfWork.SaveAsync();
-
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            var offer = await _unitOfWork.OfferRepository.GetByIdAsync(id);
+            if (offer == null)
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.Offer.Offer));
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.OfferRepository.DeleteAsync(offer);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<List<OfferDTO>>> GetAllAsync(bool relational)
@@ -61,15 +81,24 @@ public class OfferService : IOfferService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(OfferUpdateDTO offerUpdateDTO)
     {
-        var offer = await _unitOfWork.OfferRepository.AnyAsync(x => x.Id == offerUpdateDTO.Id);
-        if (!offer)
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
-
-        var result = _mapper.Map<Core.Entities.Offer.Offer>(offerUpdateDTO);
-        await _unitOfWork.OfferRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            var offer = await _unitOfWork.OfferRepository.AnyAsync(x => x.Id == offerUpdateDTO.Id);
+            if (!offer)
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<Core.Entities.Offer.Offer>(offerUpdateDTO);
+            await _unitOfWork.OfferRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<List<OfferDTO>>> MyOffersAsync()

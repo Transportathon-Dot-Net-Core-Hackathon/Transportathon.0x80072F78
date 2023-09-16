@@ -16,17 +16,19 @@ public class CompanyRepository : AsyncRepository<Company> , ICompanyRepository
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public CompanyRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext,filter)
+    public CompanyRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<Company>> GetAllCompanyAsync(bool relational)
+    public async Task<List<Company>> GetAllCompanyAsync(bool relational = true)
     {
         List<Company> companyList = new();
-        IQueryable<Company> query = _appDbContext.Companies.AsNoTracking();
+        IQueryable<Company> query = _appDbContext.Companies.Where(x => x.CompanyUsersId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(Company));
 
         if (relational == true)
@@ -45,7 +47,7 @@ public class CompanyRepository : AsyncRepository<Company> , ICompanyRepository
     public async Task<Company> GetCompanyByIdAsync(Guid id)
     {
         Company company = await _appDbContext.Companies.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.CompanyUsersId == Guid.Parse(_httpContextData.UserId)).
                                                                Include(x => x.CompanyUsers).
                                                                
                                                                FirstOrDefaultAsync();

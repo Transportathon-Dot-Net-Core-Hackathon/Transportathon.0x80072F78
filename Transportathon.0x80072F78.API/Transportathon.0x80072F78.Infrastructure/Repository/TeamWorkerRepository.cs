@@ -16,17 +16,19 @@ public class TeamWorkerRepository : AsyncRepository<TeamWorker>, ITeamWorkerRepo
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public TeamWorkerRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
+    public TeamWorkerRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<TeamWorker>> GetAllTeamWorkerAsync(bool relational)
+    public async Task<List<TeamWorker>> GetAllTeamWorkerAsync(bool relational = true)
     {
         List<TeamWorker> teamWorkerList = new();
-        IQueryable<TeamWorker> query = _appDbContext.TeamWorkers.AsNoTracking();
+        IQueryable<TeamWorker> query = _appDbContext.TeamWorkers.Where(x => x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(TeamWorker));
 
         if (relational == true)
@@ -44,7 +46,7 @@ public class TeamWorkerRepository : AsyncRepository<TeamWorker>, ITeamWorkerRepo
     public async Task<TeamWorker> GetTeamWorkerByIdAsync(Guid id)
     {
         TeamWorker teamWorker = await _appDbContext.TeamWorkers.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId)).
                                                                
                                                                FirstOrDefaultAsync();
         if (teamWorker == null) return null;
