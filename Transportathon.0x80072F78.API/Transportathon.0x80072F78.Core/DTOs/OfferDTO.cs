@@ -6,6 +6,7 @@ namespace Transportathon._0x80072F78.Core.DTOs;
 
 public class OfferDTO
 {
+    public Guid Id { get; set; }
     public Guid TransportationRequestId { get; set; }
     public TransportationRequestDTO TransportationRequest { get; set; }
     public Guid CompanyId { get; set; }
