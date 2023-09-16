@@ -29,8 +29,9 @@ public class MessageService : IMessageService
     public async Task<CustomResponse<List<MyMessagesDTO>>> GetAllAsync()
     {
         List<Guid> reciverIds = (await _unitOfWork.MessageRepository.GetAllByFilterAsync(x => x.SenderId == SenderId, null, null, x => x.ReceiverId)).ToList();
+        List<Guid> uniqueResult = reciverIds.GroupBy(x => x).Select(t => t.Key).ToList();
         List<MyMessagesDTO> messages = new List<MyMessagesDTO>();
-        foreach (var userId in reciverIds)
+        foreach (var userId in uniqueResult)
         {
             AspNetUser aspNetUser = await _userManager.FindByIdAsync(userId.ToString());
             MyMessagesDTO messagesDTO = new MyMessagesDTO();
@@ -69,18 +70,26 @@ public class MessageService : IMessageService
 
     public async Task<CustomResponse<List<MessageDTO>>> CreateAsync(MessageCreateDTO messageCreateDTO)
     {
-        await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
 
-        Message message = _mapper.Map<Message>(messageCreateDTO);
-        message.SenderId = SenderId;
-        message.SendTime = DateTime.Now;
+            Message message = _mapper.Map<Message>(messageCreateDTO);
+            message.SenderId = SenderId;
+            message.SendTime = DateTime.Now;
 
-        await _unitOfWork.MessageRepository.CreateAsync(message);
-        await _unitOfWork.SaveAsync();
-        await _unitOfWork.CommitAsync();
+            await _unitOfWork.MessageRepository.CreateAsync(message);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
 
-        List<MessageDTO> allMessages = (await GetMessagesByReceiverIdAsync(messageCreateDTO.ReceiverId)).Data;
+            List<MessageDTO> allMessages = (await GetMessagesByReceiverIdAsync(messageCreateDTO.ReceiverId)).Data;
 
-        return CustomResponse<List<MessageDTO>>.Success(StatusCodes.Status200OK, allMessages);
+            return CustomResponse<List<MessageDTO>>.Success(StatusCodes.Status200OK, allMessages);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<List<MessageDTO>>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
     }
 }
