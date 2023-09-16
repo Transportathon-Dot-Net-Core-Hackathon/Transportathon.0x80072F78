@@ -14,7 +14,5 @@ public class TeamWorker : BaseEntity<Guid>
     public string? PhoneNumber { get; set; }
     public string? EMail { get; set; }
     public string? Experience { get; set; }
-    public Guid TeamId { get; set; }
-    public Team Team { get; set; }
     public Guid UserId { get; set; }
 }

@@ -12,7 +12,7 @@ namespace Transportathon._0x80072F78.Services;
 
 public interface IAddressService
 {
-    Task<CustomResponse<List<AddressDTO>>> GetAllAsync();
+    Task<CustomResponse<List<AddressDTO>>> GetAllAsync(bool relational);
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
     Task<CustomResponse<NoContent>> UpdateAsync(AddressUpdateDTO addressUpdateDTO );
     Task<CustomResponse<NoContent>> CreateAsync(AddressCreateDTO addressCreateDTO );

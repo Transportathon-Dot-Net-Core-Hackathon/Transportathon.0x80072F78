@@ -34,7 +34,7 @@ public class AddressRepository : AsyncRepository<Address>, IAddressRepository
         return address;
     }
 
-    public async Task<List<Address>> GetAllAddressAsync(bool relational)
+    public async Task<List<Address>> GetAllAddressAsync(bool relational = true)
     {
         List<Address> addressList = new();
         IQueryable<Address> query = _appDbContext.Addresses.AsNoTracking();

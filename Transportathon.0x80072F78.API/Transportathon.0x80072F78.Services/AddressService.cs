@@ -49,15 +49,15 @@ public class AddressService : IAddressService
         return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
     }
 
-    public async Task<CustomResponse<List<AddressDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<AddressDTO>>> GetAllAsync(bool relational)
     {
-        var addressList = await _unitOfWork.AddressRepository.GetAllAsync();
+        var addressList = await _unitOfWork.AddressRepository.GetAllAddressAsync(relational);
         return CustomResponse<List<AddressDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<AddressDTO>>(addressList));
     }
 
     public async Task<CustomResponse<AddressDTO>> GetByIdAsync(Guid id)
     {
-        var address = await _unitOfWork.AddressRepository.GetByIdAsync(id);
+        var address = await _unitOfWork.AddressRepository.GetAddressByIdAsync(id);
         if (address == null)
         {
             return CustomResponse<AddressDTO>.Fail(StatusCodes.Status404NotFound, nameof(address));
