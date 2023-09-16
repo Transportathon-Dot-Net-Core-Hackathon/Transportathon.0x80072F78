@@ -1,6 +1,9 @@
-﻿namespace Transportathon._0x80072F78.Core.Repository;
+﻿using Transportathon._0x80072F78.Core.Entities;
+using Transportathon._0x80072F78.Shared.Interfaces;
 
-public interface IMessageRepository
+namespace Transportathon._0x80072F78.Core.Repository;
+
+public interface IMessageRepository : IAsyncRepository<Message>
 {
 
 }

@@ -28,7 +28,6 @@ AspNetUserClaim, AspNetUserRole, AspNetUserLogin, AspNetRoleClaim, AspNetUserTok
     public DbSet<TransportationRequest> TransportationRequests { get; set; }
     public DbSet<Offer> Offers { get; set; }
     public DbSet<Message> Messages { get; set; }
-    public DbSet<MyMessage> MyMessages { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
