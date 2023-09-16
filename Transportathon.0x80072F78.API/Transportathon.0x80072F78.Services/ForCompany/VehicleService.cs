@@ -30,6 +30,11 @@ public class VehicleService : IVehicleService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(VehicleCreateDTO vehicleCreateDTO)
     {
+        var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleCreateDTO.DriverId);
+        if (!driver)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+        }
         var mappedVehicle = _mapper.Map<Vehicle>(vehicleCreateDTO);
         await _unitOfWork.VehicleRepository.CreateAsync(mappedVehicle);
         await _unitOfWork.SaveAsync();
@@ -83,6 +88,11 @@ public class VehicleService : IVehicleService
         if (!vehicle)
         {
             return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
+        }
+        var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleUpdateDTO.DriverId);
+        if (!driver)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
         }
         var result = _mapper.Map<Vehicle>(vehicleUpdateDTO);
         await _unitOfWork.VehicleRepository.UpdateAsync(result);

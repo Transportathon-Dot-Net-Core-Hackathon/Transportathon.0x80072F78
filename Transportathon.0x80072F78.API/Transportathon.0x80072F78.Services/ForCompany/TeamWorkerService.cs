@@ -30,6 +30,11 @@ public class TeamWorkerService : ITeamWorkerService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO)
     {
+        var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamWorkerCreateDTO.TeamId);
+        if (!team)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
+        }
         var mappedTeamWorker = _mapper.Map<TeamWorker>(teamWorkerCreateDTO);
         await _unitOfWork.TeamWorkerRepository.CreateAsync(mappedTeamWorker);
         await _unitOfWork.SaveAsync();
@@ -83,6 +88,11 @@ public class TeamWorkerService : ITeamWorkerService
         if (!teamWorker)
         {
             return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(teamWorker));
+        }
+        var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamWorkerUpdateDTO.TeamId);
+        if (!team)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
         }
         var result = _mapper.Map<TeamWorker>(teamWorkerUpdateDTO);
         await _unitOfWork.TeamWorkerRepository.UpdateAsync(result);

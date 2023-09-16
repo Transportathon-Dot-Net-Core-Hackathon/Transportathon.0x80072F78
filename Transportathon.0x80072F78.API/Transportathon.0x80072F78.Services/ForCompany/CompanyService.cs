@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using Transportathon._0x80072F78.Core.DTOs;
 using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
+using Transportathon._0x80072F78.Core.Entities.Identity;
 using Transportathon._0x80072F78.Core.Repository;
 using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
@@ -21,16 +23,22 @@ public class CompanyService : ICompanyService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IHttpContextData _httpContextData;
-
-    public CompanyService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextData httpContextData)
+    private readonly UserManager<AspNetUser> _userManager;
+    public CompanyService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextData httpContextData, UserManager<AspNetUser> userManager)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _httpContextData = httpContextData;
+        _userManager = userManager;
     }
 
     public async Task<CustomResponse<NoContent>> CreateAsync(CompanyCreateDTO companyCreateDTO)
     {
+        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
+        if (user == null)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+        }
         var mappedCompany = _mapper.Map<Company>(companyCreateDTO);
         await _unitOfWork.CompanyRepository.CreateAsync(mappedCompany);
         await _unitOfWork.SaveAsync();
@@ -83,6 +91,11 @@ public class CompanyService : ICompanyService
         if (!company)
         {
             return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+        }
+        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
+        if (user == null)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
         }
         var result = _mapper.Map<Company>(companyUpdateDTO);
         await _unitOfWork.CompanyRepository.UpdateAsync(result);

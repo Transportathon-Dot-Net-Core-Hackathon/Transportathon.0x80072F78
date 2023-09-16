@@ -30,6 +30,16 @@ public class CommentService : ICommentService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(CommentCreateDTO commentCreateDTO)
     {
+        var offer = await _unitOfWork.OfferRepository.AnyAsync(x=>x.Id == commentCreateDTO.OfferId);
+        if (!offer)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+        }
+        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == commentCreateDTO.CompanyId);
+        if (!company)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+        }
         var mappedComment = _mapper.Map<Comment>(commentCreateDTO);
         await _unitOfWork.CommentRepository.CreateAsync(mappedComment);
         await _unitOfWork.SaveAsync();
@@ -83,6 +93,16 @@ public class CommentService : ICommentService
         if (!comment)
         {
             return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(comment));
+        }
+        var offer = await _unitOfWork.OfferRepository.AnyAsync(x => x.Id == commentUpdateDTO.OfferId);
+        if (!offer)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+        }
+        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == commentUpdateDTO.CompanyId);
+        if (!company)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
         }
         var result = _mapper.Map<Comment>(commentUpdateDTO);
         await _unitOfWork.CommentRepository.UpdateAsync(result);

@@ -4,7 +4,6 @@ namespace Transportathon._0x80072F78.Core.DTOs.ForCompany;
 
 public class VehicleCreateDTO
 {
-    public Guid Id { get; set; }
     public VehicleType VehicleType { get; set; }
     public string VehicleLicensePlate { get; set; }
     public string? VehicleVolumeCapacity { get; set; }

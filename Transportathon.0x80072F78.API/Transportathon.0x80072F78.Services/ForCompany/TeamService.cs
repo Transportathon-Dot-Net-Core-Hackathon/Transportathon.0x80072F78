@@ -24,8 +24,12 @@ public class TeamService : ITeamService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamCreateDTO teamCreateDTO)
     {
+        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamCreateDTO.CompanyId);
+        if (!company)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+        }
         var mappedTeam = _mapper.Map<Team>(teamCreateDTO);
-
         await _unitOfWork.TeamRepository.CreateAsync(mappedTeam);
         await _unitOfWork.SaveAsync();
 
@@ -75,6 +79,11 @@ public class TeamService : ITeamService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TeamUpdateDTO teamUpdateDTO)
     {
+        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamUpdateDTO.CompanyId);
+        if (!company)
+        {
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+        }
         var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamUpdateDTO.Id);
         if (!team)
         {
