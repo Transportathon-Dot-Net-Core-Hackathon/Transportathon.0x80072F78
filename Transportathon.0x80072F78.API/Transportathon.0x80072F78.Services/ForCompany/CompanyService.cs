@@ -34,14 +34,21 @@ public class CompanyService : ICompanyService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(CompanyCreateDTO companyCreateDTO)
     {
-        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
-        if (user == null)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
-        }
+        await _unitOfWork.BeginTransactionAsync();
+
+        AspNetUser aspNetUser = _mapper.Map<AspNetUser>(companyCreateDTO.User);
+
+        await _userManager.CreateAsync(aspNetUser, companyCreateDTO.User.Password);
+        await _unitOfWork.SaveAsync();
+
         var mappedCompany = _mapper.Map<Company>(companyCreateDTO);
+        mappedCompany.CompanyUsersId = aspNetUser.Id;
+
         await _unitOfWork.CompanyRepository.CreateAsync(mappedCompany);
         await _unitOfWork.SaveAsync();
+
+        await _unitOfWork.CommitAsync();
+
         return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
     }
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
