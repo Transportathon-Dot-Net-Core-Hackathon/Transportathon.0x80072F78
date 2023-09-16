@@ -24,6 +24,7 @@ public interface IUnitOfWork : IDisposable
     IAddressRepository AddressRepository  { get; }
     ITransportationRequestRepository TransportationRequestRepository  { get; }
     IOfferRepository OfferRepository { get; }
+    IMessageRepository MessageRepository{ get; }
 
 
     #endregion

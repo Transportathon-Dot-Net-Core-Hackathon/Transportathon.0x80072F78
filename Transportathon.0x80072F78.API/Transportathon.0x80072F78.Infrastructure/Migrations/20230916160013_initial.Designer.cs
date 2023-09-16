@@ -12,7 +12,7 @@ using Transportathon._0x80072F78.Infrastructure.Database;
 namespace Transportathon._0x80072F78.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230915193244_initial")]
+    [Migration("20230916160013_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -292,7 +292,10 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
-                    b.Property<Guid>("TeamId")
+                    b.Property<Guid?>("TeamId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -310,6 +313,9 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
 
                     b.Property<Guid>("DriverId")
                         .HasMaxLength(100)
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("VehicleLicensePlate")
@@ -573,6 +579,30 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     b.ToTable("UserRefreshTokens");
                 });
 
+            modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("MessageContent")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("SendTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.Offer.Offer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -700,13 +730,9 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.ForCompany.TeamWorker", b =>
                 {
-                    b.HasOne("Transportathon._0x80072F78.Core.Entities.ForCompany.Team", "Team")
+                    b.HasOne("Transportathon._0x80072F78.Core.Entities.ForCompany.Team", null)
                         .WithMany("TeamWorkers")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Team");
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("Transportathon._0x80072F78.Core.Entities.ForCompany.Vehicle", b =>

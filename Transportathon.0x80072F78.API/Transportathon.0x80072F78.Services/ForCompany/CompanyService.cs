@@ -34,15 +34,30 @@ public class CompanyService : ICompanyService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(CompanyCreateDTO companyCreateDTO)
     {
-        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
-        if (user == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+            await _unitOfWork.BeginTransactionAsync();
+
+            AspNetUser aspNetUser = _mapper.Map<AspNetUser>(companyCreateDTO.User);
+
+            var at = await _userManager.CreateAsync(aspNetUser, companyCreateDTO.User.Password);
+            await _unitOfWork.SaveAsync();
+
+            var mappedCompany = _mapper.Map<Company>(companyCreateDTO);
+            mappedCompany.CompanyUsersId = aspNetUser.Id;
+
+            await _unitOfWork.CompanyRepository.CreateAsync(mappedCompany);
+            await _unitOfWork.SaveAsync();
+
+            await _unitOfWork.CommitAsync();
+
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var mappedCompany = _mapper.Map<Company>(companyCreateDTO);
-        await _unitOfWork.CompanyRepository.CreateAsync(mappedCompany);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, nameof(Company));
+        }
     }
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {

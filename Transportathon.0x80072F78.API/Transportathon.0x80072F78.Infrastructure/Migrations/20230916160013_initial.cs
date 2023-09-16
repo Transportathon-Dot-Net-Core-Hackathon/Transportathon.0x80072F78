@@ -123,6 +123,21 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReceiverId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MessageContent = table.Column<string>(type: "text", nullable: false),
+                    SendTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRefreshTokens",
                 columns: table => new
                 {
@@ -317,7 +332,8 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     VehicleVolumeCapacity = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     VehicleWeightCapacity = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     VehicleStatus = table.Column<int>(type: "integer", maxLength: 150, nullable: false),
-                    DriverId = table.Column<Guid>(type: "uuid", maxLength: 100, nullable: false)
+                    DriverId = table.Column<Guid>(type: "uuid", maxLength: 100, nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -405,7 +421,8 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
                     EMail = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Experience = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
-                    TeamId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TeamId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -544,6 +561,9 @@ namespace Transportathon._0x80072F78.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "DataProtectionKeys");
+
+            migrationBuilder.DropTable(
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Offers");

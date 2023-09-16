@@ -23,6 +23,7 @@ public class UnitOfWork : IUnitOfWork
     private IAddressRepository _addressRepository;
     private ITransportationRequestRepository _transportationRequestRepository;
     private IOfferRepository _offerRepository;
+    private IMessageRepository _messageRepository;
 
     public UnitOfWork(IServiceProvider serviceProvider, IAsyncRepository<UserRefreshToken> userRefreshTokenRepository, AppDbContext appDbContext)
     {
@@ -161,6 +162,16 @@ public class UnitOfWork : IUnitOfWork
 
     }
 
+    public IMessageRepository MessageRepository
+    {
+        get
+        {
+            if (_messageRepository == default(IMessageRepository))
+                _messageRepository = _serviceProvider.GetRequiredService<IMessageRepository>();
+            return _messageRepository;
+        }
+
+    }
     #endregion
 
     #region Transaction
