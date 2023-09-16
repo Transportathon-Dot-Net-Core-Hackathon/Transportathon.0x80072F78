@@ -31,22 +31,44 @@ public class AddressService : IAddressService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(AddressCreateDTO addressCreateDTO)
     {
-        var mappedAddress = _mapper.Map<Address>(addressCreateDTO);
-        await _unitOfWork.AddressRepository.CreateAsync(mappedAddress);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedAddress = _mapper.Map<Address>(addressCreateDTO);
+            await _unitOfWork.AddressRepository.CreateAsync(mappedAddress);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var address = await _unitOfWork.AddressRepository.GetByIdAsync(id);
-        if (address == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(address));
+            var address = await _unitOfWork.AddressRepository.GetByIdAsync(id);
+            if (address == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(address));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.AddressRepository.DeleteAsync(address);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.AddressRepository.DeleteAsync(address);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<List<AddressDTO>>> GetAllAsync(bool relational)
@@ -80,14 +102,25 @@ public class AddressService : IAddressService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(AddressUpdateDTO addressUpdateDTO)
     {
-        var address = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == addressUpdateDTO.Id);
-        if (!address)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(address));
+            var address = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == addressUpdateDTO.Id);
+            if (!address)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(address));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<Address>(addressUpdateDTO);
+            await _unitOfWork.AddressRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var result = _mapper.Map<Address>(addressUpdateDTO);
-        await _unitOfWork.AddressRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 }

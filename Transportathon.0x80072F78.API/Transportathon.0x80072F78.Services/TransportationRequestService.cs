@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Transportathon._0x80072F78.Core.DTOs;
@@ -35,37 +36,59 @@ public class TransportationRequestService : ITransportationRequestService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TransportationRequestCreateDTO transportationRequestCreateDTO)
     {
-        var outputAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestCreateDTO.OutputAddressId);
-        if (!outputAddress)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Address));
+            var outputAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestCreateDTO.OutputAddressId);
+            if (!outputAddress)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Address));
+            }
+            var destinationAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestCreateDTO.DestinationAddressId);
+            if (!destinationAddress)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Address));
+            }
+            var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
+            if (user == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedTransportationRequest = _mapper.Map<TransportationRequest>(transportationRequestCreateDTO);
+            await _unitOfWork.TransportationRequestRepository.CreateAsync(mappedTransportationRequest);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var destinationAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestCreateDTO.DestinationAddressId);
-        if (!destinationAddress)
+        catch (Exception ex)
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Address));
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
-        if (user == null)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
-        }
-        var mappedTransportationRequest = _mapper.Map<TransportationRequest>(transportationRequestCreateDTO);
-        await _unitOfWork.TransportationRequestRepository.CreateAsync(mappedTransportationRequest);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var transportationRequest = await _unitOfWork.TransportationRequestRepository.GetByIdAsync(id);
-        if (transportationRequest == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            var transportationRequest = await _unitOfWork.TransportationRequestRepository.GetByIdAsync(id);
+            if (transportationRequest == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.TransportationRequestRepository.DeleteAsync(transportationRequest);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.TransportationRequestRepository.DeleteAsync(transportationRequest);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<List<TransportationRequestDTO>>> GetAllAsync(bool relational)
@@ -99,29 +122,40 @@ public class TransportationRequestService : ITransportationRequestService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TransportationRequestUpdateDTO transportationRequestUpdateDTO)
     {
-        var transportationRequest = await _unitOfWork.TransportationRequestRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.Id);
-        if (!transportationRequest)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            var transportationRequest = await _unitOfWork.TransportationRequestRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.Id);
+            if (!transportationRequest)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            }
+            var outputAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.OutputAddressId);
+            if (!outputAddress)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(outputAddress));
+            }
+            var destinationAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.DestinationAddressId);
+            if (!destinationAddress)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(destinationAddress));
+            }
+            var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
+            if (user == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<TransportationRequest>(transportationRequestUpdateDTO);
+            await _unitOfWork.TransportationRequestRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var outputAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.OutputAddressId);
-        if (!outputAddress)
+        catch (Exception ex)
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(outputAddress));
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        var destinationAddress = await _unitOfWork.AddressRepository.AnyAsync(x => x.Id == transportationRequestUpdateDTO.DestinationAddressId);
-        if (!destinationAddress)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(destinationAddress));
-        }
-        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
-        if (user == null)
-        {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
-        }
-        var result = _mapper.Map<TransportationRequest>(transportationRequestUpdateDTO);
-        await _unitOfWork.TransportationRequestRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        
     }
 }

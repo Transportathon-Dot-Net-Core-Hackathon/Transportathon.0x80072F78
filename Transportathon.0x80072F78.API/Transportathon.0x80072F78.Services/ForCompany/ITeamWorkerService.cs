@@ -12,7 +12,7 @@ namespace Transportathon._0x80072F78.Services.ForCompany;
 
 public interface ITeamWorkerService
 {
-    Task<CustomResponse<List<TeamWorkerDTO>>> GetAllAsync();
+    Task<CustomResponse<List<TeamWorkerDTO>>> GetAllAsync(bool relational);
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
     Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO);
     Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO);

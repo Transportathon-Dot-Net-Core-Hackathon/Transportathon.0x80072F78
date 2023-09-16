@@ -16,17 +16,19 @@ public class CommentRepository : AsyncRepository<Comment>, ICommentRepository
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public CommentRepository(AppDbContext AppDbContext, IFilter filter) : base(AppDbContext, filter)
+    public CommentRepository(AppDbContext AppDbContext, IFilter filter, IHttpContextData httpContextData) : base(AppDbContext, filter)
     {
         _appDbContext = AppDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<Comment>> GetAllCommentAsync(bool relational)
+    public async Task<List<Comment>> GetAllCommentAsync(bool relational = true)
     {
         List<Comment> commentList = new();
-        IQueryable<Comment> query = _appDbContext.Comments.AsNoTracking();
+        IQueryable<Comment> query = _appDbContext.Comments.Where(x => x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(Comment));
 
         if (relational == true)
@@ -44,7 +46,7 @@ public class CommentRepository : AsyncRepository<Comment>, ICommentRepository
     public async Task<Comment> GetCommentByIdAsync(Guid id)
     {
         Comment comment = await _appDbContext.Comments.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId)).
                                                                 
                                                                FirstOrDefaultAsync();
         if (comment == null) return null;

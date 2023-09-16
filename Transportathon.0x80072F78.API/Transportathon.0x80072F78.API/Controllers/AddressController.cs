@@ -5,7 +5,7 @@ using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Services;
 using Transportathon._0x80072F78.Shared.Models;
 
-namespace Transportathon._0x80072F78.API.Controllers.Company
+namespace Transportathon._0x80072F78.API.Controllers
 {
     public class AddressController : CustomBaseController
     {
@@ -16,7 +16,7 @@ namespace Transportathon._0x80072F78.API.Controllers.Company
             _addressService = addressService;
         }
         [HttpPost]
-        public async Task<ActionResult<CustomResponse<NoContent>>> Create(AddressCreateDTO addressCreateDTO )
+        public async Task<ActionResult<CustomResponse<NoContent>>> Create(AddressCreateDTO addressCreateDTO)
         {
             return CreateActionResultInstance(await _addressService.CreateAsync(addressCreateDTO));
 

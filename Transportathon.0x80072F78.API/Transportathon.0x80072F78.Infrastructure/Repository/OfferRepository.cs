@@ -10,17 +10,19 @@ public class OfferRepository : AsyncRepository<Offer>, IOfferRepository
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public OfferRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
+    public OfferRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<Offer>> GetAllOffersAsync(bool relational = false)
+    public async Task<List<Offer>> GetAllOffersAsync(bool relational = true)
     {
         List<Offer> offerList = new();
-        IQueryable<Offer> query = _appDbContext.Offers.AsNoTracking();
+        IQueryable<Offer> query = _appDbContext.Offers.Where(x=>x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(Offer));
 
         if (relational == true)
@@ -42,7 +44,7 @@ public class OfferRepository : AsyncRepository<Offer>, IOfferRepository
     public async Task<Offer> GetOfferByIdAsync(Guid id)
     {
         Offer offerRequest = await _appDbContext.Offers.AsNoTracking()
-                                                                .Where(x => x.Id == id)
+                                                                .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId))
                                                                 .Include(x => x.TransportationRequest)
                                                                 .Include(x => x.Company)
                                                                 .Include(x => x.User)

@@ -30,33 +30,55 @@ public class DriverService : IDriverService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(DriverCreateDTO driverCreateDTO)
     {
-        var mappedDriver = _mapper.Map<Driver>(driverCreateDTO);
-        await _unitOfWork.DriverRepository.CreateAsync(mappedDriver);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedDriver = _mapper.Map<Driver>(driverCreateDTO);
+            await _unitOfWork.DriverRepository.CreateAsync(mappedDriver);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var driver = await _unitOfWork.DriverRepository.GetByIdAsync(id);
-        if (driver == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            var driver = await _unitOfWork.DriverRepository.GetByIdAsync(id);
+            if (driver == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.DriverRepository.DeleteAsync(driver);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.DriverRepository.DeleteAsync(driver);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex) 
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
-    public async Task<CustomResponse<List<DriverDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<DriverDTO>>> GetAllAsync(bool relational)
     {
-        var driverList = await _unitOfWork.DriverRepository.GetAllAsync();
+        var driverList = await _unitOfWork.DriverRepository.GetAllDriverAsync(relational);
         return CustomResponse<List<DriverDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<DriverDTO>>(driverList));
     }
 
     public async Task<CustomResponse<DriverDTO>> GetByIdAsync(Guid id)
     {
-        var driver = await _unitOfWork.DriverRepository.GetByIdAsync(id);
+        var driver = await _unitOfWork.DriverRepository.GetDriverByIdAsync(id);
         if (driver == null)
         {
             return CustomResponse<DriverDTO>.Fail(StatusCodes.Status404NotFound, nameof(driver));
@@ -79,14 +101,25 @@ public class DriverService : IDriverService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(DriverUpdateDTO driverUpdateDTO)
     {
-        var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == driverUpdateDTO.Id);
-        if (!driver)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == driverUpdateDTO.Id);
+            if (!driver)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<Driver>(driverUpdateDTO);
+            await _unitOfWork.DriverRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var result = _mapper.Map<Driver>(driverUpdateDTO);
-        await _unitOfWork.DriverRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+       
     }
 }

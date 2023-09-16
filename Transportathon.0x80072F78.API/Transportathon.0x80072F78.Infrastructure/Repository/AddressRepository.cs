@@ -17,17 +17,19 @@ public class AddressRepository : AsyncRepository<Address>, IAddressRepository
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public AddressRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
+    public AddressRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
     public async Task<Address> GetAddressByIdAsync(Guid id)
     {
         Address address = await _appDbContext.Addresses.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId)).
                                                                /*Include(x => x.relatedtable).*/
                                                                FirstOrDefaultAsync();
         if (address == null) return null;
@@ -37,7 +39,7 @@ public class AddressRepository : AsyncRepository<Address>, IAddressRepository
     public async Task<List<Address>> GetAllAddressAsync(bool relational = true)
     {
         List<Address> addressList = new();
-        IQueryable<Address> query = _appDbContext.Addresses.AsNoTracking();
+        IQueryable<Address> query = _appDbContext.Addresses.Where(x=>x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(Address));
 
         if (relational == true)
