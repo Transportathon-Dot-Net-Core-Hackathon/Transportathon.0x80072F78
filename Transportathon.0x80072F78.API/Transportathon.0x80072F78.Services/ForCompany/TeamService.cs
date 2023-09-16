@@ -24,28 +24,49 @@ public class TeamService : ITeamService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamCreateDTO teamCreateDTO)
     {
-        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamCreateDTO.CompanyId);
-        if (!company)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamCreateDTO.CompanyId);
+            if (!company)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedTeam = _mapper.Map<Team>(teamCreateDTO);
+            await _unitOfWork.TeamRepository.CreateAsync(mappedTeam);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var mappedTeam = _mapper.Map<Team>(teamCreateDTO);
-        await _unitOfWork.TeamRepository.CreateAsync(mappedTeam);
-        await _unitOfWork.SaveAsync();
-
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var team = await _unitOfWork.TeamRepository.GetByIdAsync(id);
-        if (team == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
+            var team = await _unitOfWork.TeamRepository.GetByIdAsync(id);
+            if (team == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.TeamRepository.DeleteAsync(team);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.TeamRepository.DeleteAsync(team);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<List<TeamDTO>>> GetAllAsync(bool relational)
@@ -79,19 +100,30 @@ public class TeamService : ITeamService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TeamUpdateDTO teamUpdateDTO)
     {
-        var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamUpdateDTO.CompanyId);
-        if (!company)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == teamUpdateDTO.CompanyId);
+            if (!company)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            }
+            var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamUpdateDTO.Id);
+            if (!team)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<Team>(teamUpdateDTO);
+            await _unitOfWork.TeamRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var team = await _unitOfWork.TeamRepository.AnyAsync(x => x.Id == teamUpdateDTO.Id);
-        if (!team)
+        catch (Exception ex)
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(team));
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        var result = _mapper.Map<Team>(teamUpdateDTO);
-        await _unitOfWork.TeamRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        
     }
 }

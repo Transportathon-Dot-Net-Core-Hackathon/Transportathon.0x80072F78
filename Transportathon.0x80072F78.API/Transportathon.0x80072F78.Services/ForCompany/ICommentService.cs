@@ -12,7 +12,7 @@ namespace Transportathon._0x80072F78.Services.ForCompany;
 
 public interface ICommentService 
 {
-    Task<CustomResponse<List<CommentDTO>>> GetAllAsync();
+    Task<CustomResponse<List<CommentDTO>>> GetAllAsync(bool relational);
     Task<CustomResponse<NoContent>> DeleteAsync(Guid id);
     Task<CustomResponse<NoContent>> UpdateAsync(CommentUpdateDTO commentUpdateDTO );
     Task<CustomResponse<NoContent>> CreateAsync(CommentCreateDTO commentCreateDTO );

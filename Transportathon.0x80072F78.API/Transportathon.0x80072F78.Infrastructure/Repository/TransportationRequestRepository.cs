@@ -16,17 +16,19 @@ public class TransportationRequestRepository : AsyncRepository<TransportationReq
 {
     private readonly AppDbContext _appDbContext;
     private readonly IFilter _filter;
+    private readonly IHttpContextData _httpContextData;
 
-    public TransportationRequestRepository(AppDbContext appDbContext, IFilter filter) : base(appDbContext, filter)
+    public TransportationRequestRepository(AppDbContext appDbContext, IFilter filter, IHttpContextData httpContextData) : base(appDbContext, filter)
     {
         _appDbContext = appDbContext;
         _filter = filter;
+        _httpContextData = httpContextData;
     }
 
-    public async Task<List<TransportationRequest>> GetAllTransportationRequestAsync(bool relational = false)
+    public async Task<List<TransportationRequest>> GetAllTransportationRequestAsync(bool relational = true)
     {
         List<TransportationRequest> transportationRequestList = new();
-        IQueryable<TransportationRequest> query = _appDbContext.TransportationRequests.AsNoTracking();
+        IQueryable<TransportationRequest> query = _appDbContext.TransportationRequests.Where(x => x.UserId == Guid.Parse(_httpContextData.UserId)).AsNoTracking();
         var entityType = _appDbContext.Model.FindEntityType(typeof(TransportationRequest));
 
         if (relational == true)
@@ -45,7 +47,7 @@ public class TransportationRequestRepository : AsyncRepository<TransportationReq
     public async Task<TransportationRequest> GetTransportationRequestByIdAsync(Guid id)
     {
         TransportationRequest transportationRequest = await _appDbContext.TransportationRequests.AsNoTracking()
-                                                              .Where(x => x.Id == id).
+                                                              .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId)).
                                                                Include(x => x.OutputAddress).
                                                                Include(x => x.DestinationAddress).
                                                                FirstOrDefaultAsync();

@@ -36,8 +36,8 @@ public class CompanyService : ICompanyService
     {
         try
         {
-            await _unitOfWork.BeginTransactionAsync();
 
+            await _unitOfWork.BeginTransactionAsync();
             AspNetUser aspNetUser = _mapper.Map<AspNetUser>(companyCreateDTO.User);
 
             var at = await _userManager.CreateAsync(aspNetUser, companyCreateDTO.User.Password);
@@ -48,38 +48,47 @@ public class CompanyService : ICompanyService
 
             await _unitOfWork.CompanyRepository.CreateAsync(mappedCompany);
             await _unitOfWork.SaveAsync();
-
             await _unitOfWork.CommitAsync();
-
             return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, nameof(Company));
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
     }
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id);
-        if (company == null)
+        try
         {
-           return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id);
+            if (company == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.CompanyRepository.DeleteAsync(company);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.CompanyRepository.DeleteAsync(company);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
-    public async Task<CustomResponse<List<CompanyDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<CompanyDTO>>> GetAllAsync(bool relational)
     {
-        var companyList = await _unitOfWork.CompanyRepository.GetAllAsync();
+        var companyList = await _unitOfWork.CompanyRepository.GetAllCompanyAsync(relational);
         return CustomResponse<List<CompanyDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<CompanyDTO>>(companyList));
     }
 
     public async Task<CustomResponse<CompanyDTO>> GetByIdAsync(Guid id)
     {
-        var company =  await _unitOfWork.CompanyRepository.GetByIdAsync(id);
+        var company =  await _unitOfWork.CompanyRepository.GetCompanyByIdAsync(id);
         if (company == null)
         {
             return CustomResponse<CompanyDTO>.Fail(StatusCodes.Status404NotFound, nameof(company));
@@ -102,19 +111,30 @@ public class CompanyService : ICompanyService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(CompanyUpdateDTO companyUpdateDTO)
     {
-        var company = await _unitOfWork.CompanyRepository.AnyAsync(x=>x.Id == companyUpdateDTO.Id);
-        if (!company)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            var company = await _unitOfWork.CompanyRepository.AnyAsync(x => x.Id == companyUpdateDTO.Id);
+            if (!company)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(company));
+            }
+            var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
+            if (user == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+            }
+            var result = _mapper.Map<Company>(companyUpdateDTO);
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.CompanyRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var user = await _userManager.FindByIdAsync(_httpContextData.UserId);
-        if (user == null)
+        catch (Exception ex)
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(AspNetUser));
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        var result = _mapper.Map<Company>(companyUpdateDTO);
-        await _unitOfWork.CompanyRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        
     }
 }

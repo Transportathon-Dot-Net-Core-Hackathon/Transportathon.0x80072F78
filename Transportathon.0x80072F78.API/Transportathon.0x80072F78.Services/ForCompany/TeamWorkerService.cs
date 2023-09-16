@@ -30,33 +30,55 @@ public class TeamWorkerService : ITeamWorkerService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(TeamWorkerCreateDTO teamWorkerCreateDTO)
     {
-        var mappedTeamWorker = _mapper.Map<TeamWorker>(teamWorkerCreateDTO);
-        await _unitOfWork.TeamWorkerRepository.CreateAsync(mappedTeamWorker);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedTeamWorker = _mapper.Map<TeamWorker>(teamWorkerCreateDTO);
+            await _unitOfWork.TeamWorkerRepository.CreateAsync(mappedTeamWorker);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var teamWorker = await _unitOfWork.TeamWorkerRepository.GetByIdAsync(id);
-        if (teamWorker == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(TeamWorker));
+            var teamWorker = await _unitOfWork.TeamWorkerRepository.GetByIdAsync(id);
+            if (teamWorker == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(TeamWorker));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.TeamWorkerRepository.DeleteAsync(teamWorker);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.TeamWorkerRepository.DeleteAsync(teamWorker);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
-    public async Task<CustomResponse<List<TeamWorkerDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<TeamWorkerDTO>>> GetAllAsync(bool relational)
     {
-        var teamWorkerList = await _unitOfWork.TeamWorkerRepository.GetAllAsync();
+        var teamWorkerList = await _unitOfWork.TeamWorkerRepository.GetAllTeamWorkerAsync(relational);
         return CustomResponse<List<TeamWorkerDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<TeamWorkerDTO>>(teamWorkerList));
     }
 
     public async Task<CustomResponse<TeamWorkerDTO>> GetByIdAsync(Guid id)
     {
-        var teamWorker = await _unitOfWork.TeamWorkerRepository.GetByIdAsync(id);
+        var teamWorker = await _unitOfWork.TeamWorkerRepository.GetTeamWorkerByIdAsync(id);
         if (teamWorker == null)
         {
             return CustomResponse<TeamWorkerDTO>.Fail(StatusCodes.Status404NotFound, nameof(TeamWorker));
@@ -67,14 +89,25 @@ public class TeamWorkerService : ITeamWorkerService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(TeamWorkerUpdateDTO teamWorkerUpdateDTO)
     {
-        var teamWorker = await _unitOfWork.TeamWorkerRepository.AnyAsync(x => x.Id == teamWorkerUpdateDTO.Id);
-        if (!teamWorker)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(teamWorker));
+            var teamWorker = await _unitOfWork.TeamWorkerRepository.AnyAsync(x => x.Id == teamWorkerUpdateDTO.Id);
+            if (!teamWorker)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(teamWorker));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<TeamWorker>(teamWorkerUpdateDTO);
+            await _unitOfWork.TeamWorkerRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var result = _mapper.Map<TeamWorker>(teamWorkerUpdateDTO);
-        await _unitOfWork.TeamWorkerRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 }

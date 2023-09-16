@@ -30,38 +30,60 @@ public class VehicleService : IVehicleService
 
     public async Task<CustomResponse<NoContent>> CreateAsync(VehicleCreateDTO vehicleCreateDTO)
     {
-        var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleCreateDTO.DriverId);
-        if (!driver)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleCreateDTO.DriverId);
+            if (!driver)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var mappedVehicle = _mapper.Map<Vehicle>(vehicleCreateDTO);
+            await _unitOfWork.VehicleRepository.CreateAsync(mappedVehicle);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var mappedVehicle = _mapper.Map<Vehicle>(vehicleCreateDTO);
-        await _unitOfWork.VehicleRepository.CreateAsync(mappedVehicle);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
     {
-        var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(id);
-        if (vehicle == null)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
+            var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(id);
+            if (vehicle == null)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.VehicleRepository.DeleteAsync(vehicle);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        await _unitOfWork.VehicleRepository.DeleteAsync(vehicle);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
+        
     }
 
-    public async Task<CustomResponse<List<VehicleDTO>>> GetAllAsync()
+    public async Task<CustomResponse<List<VehicleDTO>>> GetAllAsync(bool relational)
     {
-        var vehicleList = await _unitOfWork.VehicleRepository.GetAllAsync();
+        var vehicleList = await _unitOfWork.VehicleRepository.GetAllVehicleAsync(relational);
         return CustomResponse<List<VehicleDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<VehicleDTO>>(vehicleList));
     }
 
     public async Task<CustomResponse<VehicleDTO>> GetByIdAsync(Guid id)
     {
-         var vehicle = await _unitOfWork.VehicleRepository.GetByIdAsync(id);
+         var vehicle = await _unitOfWork.VehicleRepository.GetVehicleByIdAsync(id);
         if (vehicle == null)
         {
             return CustomResponse<VehicleDTO>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
@@ -84,19 +106,30 @@ public class VehicleService : IVehicleService
 
     public async Task<CustomResponse<NoContent>> UpdateAsync(VehicleUpdateDTO vehicleUpdateDTO)
     {
-        var vehicle = await _unitOfWork.VehicleRepository.AnyAsync(x => x.Id == vehicleUpdateDTO.Id);
-        if (!vehicle)
+        try
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
+            var vehicle = await _unitOfWork.VehicleRepository.AnyAsync(x => x.Id == vehicleUpdateDTO.Id);
+            if (!vehicle)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
+            }
+            var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleUpdateDTO.DriverId);
+            if (!driver)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            var result = _mapper.Map<Vehicle>(vehicleUpdateDTO);
+            await _unitOfWork.VehicleRepository.UpdateAsync(result);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+            return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
-        var driver = await _unitOfWork.DriverRepository.AnyAsync(x => x.Id == vehicleUpdateDTO.DriverId);
-        if (!driver)
+        catch (Exception ex)
         {
-            return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(driver));
+            await _unitOfWork.RollbackAsync();
+            return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        var result = _mapper.Map<Vehicle>(vehicleUpdateDTO);
-        await _unitOfWork.VehicleRepository.UpdateAsync(result);
-        await _unitOfWork.SaveAsync();
-        return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
+        
     }
 }
