@@ -49,4 +49,10 @@ public class OfferController : CustomBaseController
     {
         return CreateActionResultInstance(await _offerService.MyOffersAsync());
     }
+    
+    [HttpPut]
+    public async Task<ActionResult<CustomResponse<OfferDTO>>> ChangeOfferStatus(StatusUpdateDTO statusUpdateDTO)
+    {
+        return CreateActionResultInstance(await _offerService.ChangeOfferStatusAsync(statusUpdateDTO));
+    }
 }

@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Transportathon._0x80072F78.Core.DTOs;
-using Transportathon._0x80072F78.Core.Entities.ForCompany;
-using Transportathon._0x80072F78.Core.Entities.Identity;
+using Transportathon._0x80072F78.Core.Enums;
 using Transportathon._0x80072F78.Core.Repository;
 using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
@@ -27,9 +26,12 @@ public class OfferService : IOfferService
         {
             await _unitOfWork.BeginTransactionAsync();
 
-            var mappedAddress = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
+            var mappedOffer = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
+            mappedOffer.UserId = Guid.Parse(_httpContextData.UserId);
+            mappedOffer.OfferTime = DateTime.Now;
+            mappedOffer.Status = DocumentStatus.Pending;
 
-            await _unitOfWork.OfferRepository.CreateAsync(mappedAddress);
+            await _unitOfWork.OfferRepository.CreateAsync(mappedOffer);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
 
@@ -38,6 +40,7 @@ public class OfferService : IOfferService
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
+
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
     }
@@ -61,6 +64,7 @@ public class OfferService : IOfferService
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
+
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
     }
@@ -78,9 +82,15 @@ public class OfferService : IOfferService
     {
         var offer = await _unitOfWork.OfferRepository.GetOfferByIdAsync(id);
         if (offer == null)
-            return CustomResponse<OfferDTO>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+            return CustomResponse<OfferDTO>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.Offer.Offer));
+
+        string companyName = (await _unitOfWork.CompanyRepository.GetAllByFilterAsync(x => x.Id == offer.CompanyId, null, null, t => t.CompanyName)).SingleOrDefault();
+
+        if (offer.Status == DocumentStatus.Approved)
+            offer = await _unitOfWork.OfferRepository.GetOfferByIdIfApprovedAsync(id);
 
         var offerDTO = _mapper.Map<OfferDTO>(offer);
+        offerDTO.CompanyName = companyName;
         offerDTO.IsCanComment = await IsCanCommentAsync(id);
 
         return CustomResponse<OfferDTO>.Success(StatusCodes.Status200OK, offerDTO);
@@ -93,16 +103,22 @@ public class OfferService : IOfferService
             var offer = await _unitOfWork.OfferRepository.AnyAsync(x => x.Id == offerUpdateDTO.Id);
             if (!offer)
                 return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+
             await _unitOfWork.BeginTransactionAsync();
+
             var result = _mapper.Map<Core.Entities.Offer.Offer>(offerUpdateDTO);
+            result.UserId = Guid.Parse(_httpContextData.UserId);
+
             await _unitOfWork.OfferRepository.UpdateAsync(result);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
+
             return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
+
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
     }
@@ -126,5 +142,38 @@ public class OfferService : IOfferService
             return false;
 
         return true;
+    }
+
+    public async Task<CustomResponse<OfferDTO>> ChangeOfferStatusAsync(StatusUpdateDTO statusUpdateDTO)
+    {
+        try
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            Core.Entities.Offer.Offer offer = await _unitOfWork.OfferRepository.GetOfferByIdAsync(statusUpdateDTO.Id);
+            if (offer == null)
+                return CustomResponse<OfferDTO>.Fail(StatusCodes.Status400BadRequest, nameof(Core.Entities.Offer.Offer));
+
+            string companyName = (await _unitOfWork.CompanyRepository.GetAllByFilterAsync(x => x.Id == offer.CompanyId, null, null, t => t.CompanyName)).SingleOrDefault();
+
+            if (offer.Status == DocumentStatus.Approved)
+                offer = await _unitOfWork.OfferRepository.GetOfferByIdIfApprovedAsync(statusUpdateDTO.Id);
+            
+            offer.Status = statusUpdateDTO.DocumentStatus;
+            await _unitOfWork.OfferRepository.UpdateAsync(offer);
+            await _unitOfWork.SaveAsync();
+            await _unitOfWork.CommitAsync();
+
+            OfferDTO offerDTO = _mapper.Map<OfferDTO>(offer);
+            offerDTO.CompanyName = companyName;
+            offerDTO.IsCanComment = await IsCanCommentAsync(statusUpdateDTO.Id);
+
+            return CustomResponse<OfferDTO>.Success(StatusCodes.Status200OK, offerDTO);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+
+            return CustomResponse<OfferDTO>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
+        }
     }
 }

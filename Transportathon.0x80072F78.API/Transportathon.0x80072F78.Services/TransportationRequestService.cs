@@ -44,6 +44,10 @@ public class TransportationRequestService : ITransportationRequestService
             await _unitOfWork.BeginTransactionAsync();
 
             var mappedTransportationRequest = _mapper.Map<TransportationRequest>(transportationRequestCreateDTO);
+            mappedTransportationRequest.UserId = Guid.Parse(_httpContextData.UserId);
+            mappedTransportationRequest.CreatedDate = DateTime.Now;
+            mappedTransportationRequest.DocumentStatus = DocumentStatus.Pending;
+
             await _unitOfWork.TransportationRequestRepository.CreateAsync(mappedTransportationRequest);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
@@ -94,7 +98,7 @@ public class TransportationRequestService : ITransportationRequestService
         var transportationRequest = await _unitOfWork.TransportationRequestRepository.GetTransportationRequestByIdAsync(id);
         if (transportationRequest == null)
             return CustomResponse<TransportationRequestDTO>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
-
+        
         var transportationRequestDTO = _mapper.Map<TransportationRequestDTO>(transportationRequest);
 
         return CustomResponse<TransportationRequestDTO>.Success(StatusCodes.Status200OK, transportationRequestDTO);
@@ -135,6 +139,7 @@ public class TransportationRequestService : ITransportationRequestService
             await _unitOfWork.BeginTransactionAsync();
 
             var result = _mapper.Map<TransportationRequest>(transportationRequestUpdateDTO);
+
             await _unitOfWork.TransportationRequestRepository.UpdateAsync(result);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
@@ -155,6 +160,9 @@ public class TransportationRequestService : ITransportationRequestService
         {
             await _unitOfWork.BeginTransactionAsync();
             TransportationRequest transportationRequest = await _unitOfWork.TransportationRequestRepository.GetByIdAsync(statusUpdateDTO.Id);
+            if (transportationRequest == null)
+                return CustomResponse<TransportationRequestDTO>.Fail(StatusCodes.Status400BadRequest, nameof(TransportationRequest));
+
             transportationRequest.DocumentStatus = statusUpdateDTO.DocumentStatus;
 
             await _unitOfWork.TransportationRequestRepository.UpdateAsync(transportationRequest);

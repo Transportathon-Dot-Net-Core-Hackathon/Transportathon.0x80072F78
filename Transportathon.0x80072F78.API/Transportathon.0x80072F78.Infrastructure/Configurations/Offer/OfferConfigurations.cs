@@ -20,6 +20,12 @@ public class OfferConfigurations : IEntityTypeConfiguration<Core.Entities.Offer.
         builder.Property(x => x.OfferTime).IsRequired();
         builder.Property(x => x.Status).IsRequired();
 
+        #region Virtual Fields
+
+        builder.Ignore(k => k.CompanyName);
+
+        #endregion
+
         builder.HasOne(c => c.Company).WithMany().HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(c => c.User).WithMany().HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.NoAction);
         builder.HasOne(c => c.Vehicle).WithMany().HasForeignKey(c => c.VehicleId).OnDelete(DeleteBehavior.NoAction);

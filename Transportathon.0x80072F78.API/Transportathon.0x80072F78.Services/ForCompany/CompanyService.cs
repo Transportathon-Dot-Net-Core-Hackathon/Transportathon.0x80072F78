@@ -1,14 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.DTOs;
-using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
@@ -36,7 +28,6 @@ public class CompanyService : ICompanyService
     {
         try
         {
-
             await _unitOfWork.BeginTransactionAsync();
             AspNetUser aspNetUser = _mapper.Map<AspNetUser>(companyCreateDTO.User);
 

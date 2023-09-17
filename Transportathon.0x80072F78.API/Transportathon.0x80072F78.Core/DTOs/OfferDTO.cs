@@ -23,4 +23,5 @@ public class OfferDTO
     public DateTime OfferTime { get; set; }
     public DocumentStatus Status { get; set; }
     public bool IsCanComment { get; set; }
+    public string? CompanyName { get; set; }
 }
