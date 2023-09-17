@@ -23,6 +23,7 @@ public class UserController : CustomBaseController
         return CreateActionResultInstance(await _userService.GetUserAsync());
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<CustomResponse<IdentityResult>>> CreateUser(CreateUserDTO createUserDTO)
     {
