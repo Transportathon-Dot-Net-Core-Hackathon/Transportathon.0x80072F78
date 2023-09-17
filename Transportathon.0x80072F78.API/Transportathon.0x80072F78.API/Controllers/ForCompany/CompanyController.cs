@@ -50,5 +50,12 @@ namespace Transportathon._0x80072F78.API.Controllers.Company
             return CreateActionResultInstance(await _companyService.GetByIdAsync(id));
 
         }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<ActionResult<CustomResponse<ViewCompanyDTO>>> ViewCompany(Guid id)
+        {
+            return CreateActionResultInstance(await _companyService.ViewCompanyAsync(id));
+
+        }
     }
 }

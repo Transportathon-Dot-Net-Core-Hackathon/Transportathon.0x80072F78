@@ -146,9 +146,13 @@ public class CompanyService : ICompanyService
     public async Task<CustomResponse<ViewCompanyDTO>> ViewCompanyAsync(Guid companyId)
     {
         Company company = await _unitOfWork.CompanyRepository.GetByIdAsync(companyId);
+        if (company == null)
+            return CustomResponse<ViewCompanyDTO>.Fail(StatusCodes.Status404NotFound, nameof(Company));
 
         List<Comment> companyComments = (await _unitOfWork.CommentRepository.GetAllByFilterAsync(x=> x.CompanyId == companyId)).ToList();
-        double averageScore = companyComments.Average(x => x.Score);
+        double averageScore = 0;
+        if (companyComments.Count > 0)
+            averageScore = companyComments.Average(x => x.Score);
 
         List<Vehicle> vehicles = (await _unitOfWork.VehicleRepository.GetAllByFilterAsync(x => x.UserId == company.CompanyUsersId)).ToList();
         List<VehicleDTO> vehicleDTOs = _mapper.Map<List<VehicleDTO>>(vehicles);
