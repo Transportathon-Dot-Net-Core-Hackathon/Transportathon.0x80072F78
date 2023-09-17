@@ -128,7 +128,7 @@ public class VehicleService : IVehicleService
 
     public async Task<CustomResponse<List<VehicleDTO>>> AvailableVehiclesAsync()
     {
-        List<Vehicle> avaiableVehicles = (await _unitOfWork.VehicleRepository.GetAllByFilterAsync(x=> x.VehicleStatus == VehicleStatus.Available && x.UserId == Guid.Parse(_httpContextData.UserId))).ToList();
+        List<Vehicle> avaiableVehicles = (await _unitOfWork.VehicleRepository.GetAllByFilterAsync(x=> x.VehicleStatus == VehicleStatus.Available && x.UserId == Guid.Parse(_httpContextData.UserId),null,nameof(Vehicle.Driver))).ToList();
         List<VehicleDTO> avaiableVehiclesDTO = _mapper.Map<List<VehicleDTO>>(avaiableVehicles);
 
         return CustomResponse<List<VehicleDTO>>.Success(StatusCodes.Status200OK, avaiableVehiclesDTO);

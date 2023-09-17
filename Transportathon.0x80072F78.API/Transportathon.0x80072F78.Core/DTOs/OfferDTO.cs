@@ -22,4 +22,5 @@ public class OfferDTO
     public DateTime TransportationDate { get; set; }
     public DateTime OfferTime { get; set; }
     public DocumentStatus Status { get; set; }
+    public bool IsCanComment { get; set; }
 }

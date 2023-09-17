@@ -26,10 +26,13 @@ public class OfferService : IOfferService
         try
         {
             await _unitOfWork.BeginTransactionAsync();
+
             var mappedAddress = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
+
             await _unitOfWork.OfferRepository.CreateAsync(mappedAddress);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
+
             return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
         catch (Exception ex)
@@ -37,7 +40,6 @@ public class OfferService : IOfferService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
@@ -47,10 +49,13 @@ public class OfferService : IOfferService
             var offer = await _unitOfWork.OfferRepository.GetByIdAsync(id);
             if (offer == null)
                 return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(Core.Entities.Offer.Offer));
+
             await _unitOfWork.BeginTransactionAsync();
+
             await _unitOfWork.OfferRepository.DeleteAsync(offer);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
+
             return CustomResponse<NoContent>.Success(StatusCodes.Status200OK);
         }
         catch (Exception ex)
@@ -58,14 +63,15 @@ public class OfferService : IOfferService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
     }
 
     public async Task<CustomResponse<List<OfferDTO>>> GetAllAsync(bool relational)
     {
         var offerList = await _unitOfWork.OfferRepository.GetAllOffersAsync(relational);
 
-        return CustomResponse<List<OfferDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<OfferDTO>>(offerList));
+        var offerDtoList = _mapper.Map<List<OfferDTO>>(offerList);
+
+        return CustomResponse<List<OfferDTO>>.Success(StatusCodes.Status200OK, offerDtoList);
     }
 
     public async Task<CustomResponse<OfferDTO>> GetByIdAsync(Guid id)
@@ -75,6 +81,7 @@ public class OfferService : IOfferService
             return CustomResponse<OfferDTO>.Fail(StatusCodes.Status404NotFound, nameof(offer));
 
         var offerDTO = _mapper.Map<OfferDTO>(offer);
+        offerDTO.IsCanComment = await IsCanCommentAsync(id);
 
         return CustomResponse<OfferDTO>.Success(StatusCodes.Status200OK, offerDTO);
     }
@@ -98,7 +105,6 @@ public class OfferService : IOfferService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
     }
 
     public async Task<CustomResponse<List<OfferDTO>>> MyOffersAsync()
@@ -111,5 +117,14 @@ public class OfferService : IOfferService
         var result = _mapper.Map<List<OfferDTO>>(offerList);
 
         return CustomResponse<List<OfferDTO>>.Success(StatusCodes.Status200OK, result);
+    }
+
+    private async Task<bool> IsCanCommentAsync(Guid offerId)
+    {
+        bool checkComment = await _unitOfWork.CommentRepository.AnyAsync(x=> x.OfferId == offerId);
+        if (checkComment)
+            return false;
+
+        return true;
     }
 }

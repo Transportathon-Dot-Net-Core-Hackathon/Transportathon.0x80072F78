@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.Entities.Identity;
+﻿using Transportathon._0x80072F78.Core.Entities.Identity;
 
 namespace Transportathon._0x80072F78.Core.Entities.ForCompany;
 

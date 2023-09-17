@@ -25,5 +25,5 @@ public class CompanyDTO
     public string VKN { get; set; }
     public Guid CompanyUsersId { get; set; }
     public UserDTO CompanyUsers { get; set; }
-    public float? AverageScore { get; set; }
+    public double? AverageScore { get; set; }
 }
