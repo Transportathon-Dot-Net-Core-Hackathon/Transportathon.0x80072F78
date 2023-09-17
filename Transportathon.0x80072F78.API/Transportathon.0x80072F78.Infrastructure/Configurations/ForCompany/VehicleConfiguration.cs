@@ -14,7 +14,7 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Core.Entities.ForCo
 {
     public void Configure(EntityTypeBuilder<Vehicle> builder)
     {
-       builder.ToTable("Vehicles");
+        builder.ToTable("Vehicles");
         builder.Property(x => x.VehicleType).IsRequired().HasMaxLength(100);
         builder.Property(x => x.VehicleLicensePlate).IsRequired().HasMaxLength(100);
         builder.Property(x => x.VehicleVolumeCapacity).HasMaxLength(40);

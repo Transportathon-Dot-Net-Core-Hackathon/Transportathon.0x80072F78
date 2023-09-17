@@ -13,7 +13,7 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
         builder.Property(x => x.Experience).HasMaxLength(40);
         builder.Property(x => x.PhoneNumber).HasMaxLength(15);
         builder.Property(x => x.EMail).HasMaxLength(40);
-        builder.Property(x => x.Age).IsRequired().HasMaxLength(20);
+        builder.Property(x => x.Age).IsRequired();
         builder.Property(x => x.DrivingLicenceTypes).IsRequired();
         builder.Property(x => x.UserId).IsRequired();
     }
