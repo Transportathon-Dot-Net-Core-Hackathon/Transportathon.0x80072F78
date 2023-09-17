@@ -11,4 +11,5 @@ public interface ITransportationRequestService
     Task<CustomResponse<NoContent>> CreateAsync(TransportationRequestCreateDTO transportationRequestCreateDTO );
     Task<CustomResponse<TransportationRequestDTO>> GetByIdAsync(Guid id);
     Task<CustomResponse<List<TransportationRequestDTO>>> MyTransportationRequestsAsync();
+    Task<CustomResponse<TransportationRequestDTO>> ChangeTransportationRequestStatusAsync(StatusUpdateDTO statusUpdateDTO);
 }

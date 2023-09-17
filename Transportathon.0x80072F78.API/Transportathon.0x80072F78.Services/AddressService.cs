@@ -35,6 +35,7 @@ public class AddressService : IAddressService
         {
             await _unitOfWork.BeginTransactionAsync();
             var mappedAddress = _mapper.Map<Address>(addressCreateDTO);
+            mappedAddress.UserId = Guid.Parse(_httpContextData.UserId);
             await _unitOfWork.AddressRepository.CreateAsync(mappedAddress);
             await _unitOfWork.SaveAsync();
             await _unitOfWork.CommitAsync();
