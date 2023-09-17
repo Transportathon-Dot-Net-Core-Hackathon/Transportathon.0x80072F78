@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="Moq" Version="4.20.69" />
     <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +22,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transportathon.0x80072F78.API\Transportathon._0x80072F78.API.csproj" />
+    <ProjectReference Include="..\Transportathon.0x80072F78.Core.Infrastructure\Transportathon._0x80072F78.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\Transportathon.0x80072F78.Core\Transportathon._0x80072F78.Core.csproj" />
+    <ProjectReference Include="..\Transportathon.0x80072F78.Infrastructure\Transportathon._0x80072F78.Infrastructure.csproj" />
+    <ProjectReference Include="..\Transportathon.0x80072F78.Services\Transportathon._0x80072F78.Services.csproj" />
+    <ProjectReference Include="..\Transportathon.0x80072F78.Shared\Transportathon._0x80072F78.Shared.csproj" />
   </ItemGroup>
 
 </Project>

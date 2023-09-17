@@ -24,6 +24,11 @@ public class OfferService : IOfferService
     {
         try
         {
+            var transportationRequest = await _unitOfWork.TransportationRequestRepository.AnyAsync(x => x.Id == offerCreateDTO.TransportationRequestId);
+            if (!transportationRequest)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            }
             await _unitOfWork.BeginTransactionAsync();
 
             var mappedOffer = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
