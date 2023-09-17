@@ -18,4 +18,5 @@ public interface IVehicleService
     Task<CustomResponse<NoContent>> CreateAsync(VehicleCreateDTO vehicleCreateDTO );
     Task<CustomResponse<VehicleDTO>> GetByIdAsync(Guid id);
     Task<CustomResponse<List<VehicleDTO>>> MyVehiclesAsync();
+    Task<CustomResponse<List<VehicleDTO>>> AvailableVehiclesAsync();
 }

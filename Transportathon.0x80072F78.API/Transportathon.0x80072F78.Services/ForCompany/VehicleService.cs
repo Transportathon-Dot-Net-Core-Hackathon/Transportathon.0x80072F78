@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transportathon._0x80072F78.Core.DTOs;
-using Transportathon._0x80072F78.Core.DTOs.Company;
 using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
+using Transportathon._0x80072F78.Core.Enums;
 using Transportathon._0x80072F78.Core.Repository;
 using Transportathon._0x80072F78.Shared.Interfaces;
 using Transportathon._0x80072F78.Shared.Models;
@@ -49,7 +44,6 @@ public class VehicleService : IVehicleService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
     }
 
     public async Task<CustomResponse<NoContent>> DeleteAsync(Guid id)
@@ -72,23 +66,23 @@ public class VehicleService : IVehicleService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
     }
 
     public async Task<CustomResponse<List<VehicleDTO>>> GetAllAsync(bool relational)
     {
         var vehicleList = await _unitOfWork.VehicleRepository.GetAllVehicleAsync(relational);
+
         return CustomResponse<List<VehicleDTO>>.Success(StatusCodes.Status200OK, _mapper.Map<List<VehicleDTO>>(vehicleList));
     }
 
     public async Task<CustomResponse<VehicleDTO>> GetByIdAsync(Guid id)
     {
-         var vehicle = await _unitOfWork.VehicleRepository.GetVehicleByIdAsync(id);
+        var vehicle = await _unitOfWork.VehicleRepository.GetVehicleByIdAsync(id);
         if (vehicle == null)
-        {
             return CustomResponse<VehicleDTO>.Fail(StatusCodes.Status404NotFound, nameof(vehicle));
-        }
+
         var vehicleDTO = _mapper.Map<VehicleDTO>(vehicle);
+
         return CustomResponse<VehicleDTO>.Success(StatusCodes.Status200OK, vehicleDTO);
     }
 
@@ -130,6 +124,13 @@ public class VehicleService : IVehicleService
             await _unitOfWork.RollbackAsync();
             return CustomResponse<NoContent>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
-        
+    }
+
+    public async Task<CustomResponse<List<VehicleDTO>>> AvailableVehiclesAsync()
+    {
+        List<Vehicle> avaiableVehicles = (await _unitOfWork.VehicleRepository.GetAllByFilterAsync(x=> x.VehicleStatus == VehicleStatus.Available && x.UserId == Guid.Parse(_httpContextData.UserId))).ToList();
+        List<VehicleDTO> avaiableVehiclesDTO = _mapper.Map<List<VehicleDTO>>(avaiableVehicles);
+
+        return CustomResponse<List<VehicleDTO>>.Success(StatusCodes.Status200OK, avaiableVehiclesDTO);
     }
 }
