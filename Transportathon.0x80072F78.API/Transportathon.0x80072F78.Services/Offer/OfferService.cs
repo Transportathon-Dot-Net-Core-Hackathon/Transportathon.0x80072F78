@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Transportathon._0x80072F78.Core.DTOs;
+using Transportathon._0x80072F78.Core.DTOs.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.ForCompany;
 using Transportathon._0x80072F78.Core.Entities.Identity;
 using Transportathon._0x80072F78.Core.Repository;
@@ -25,6 +26,11 @@ public class OfferService : IOfferService
     {
         try
         {
+            var transportationRequest = await _unitOfWork.TransportationRequestRepository.AnyAsync(x => x.Id == offerCreateDTO.TransportationRequestId);
+            if (!transportationRequest)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            }
             await _unitOfWork.BeginTransactionAsync();
             var mappedAddress = _mapper.Map<Core.Entities.Offer.Offer>(offerCreateDTO);
             await _unitOfWork.OfferRepository.CreateAsync(mappedAddress);
@@ -86,6 +92,11 @@ public class OfferService : IOfferService
             var offer = await _unitOfWork.OfferRepository.AnyAsync(x => x.Id == offerUpdateDTO.Id);
             if (!offer)
                 return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(offer));
+            var transportationRequest = await _unitOfWork.TransportationRequestRepository.AnyAsync(x => x.Id == offerUpdateDTO.TransportationRequestId);
+            if (!transportationRequest)
+            {
+                return CustomResponse<NoContent>.Fail(StatusCodes.Status404NotFound, nameof(transportationRequest));
+            }
             await _unitOfWork.BeginTransactionAsync();
             var result = _mapper.Map<Core.Entities.Offer.Offer>(offerUpdateDTO);
             await _unitOfWork.OfferRepository.UpdateAsync(result);
