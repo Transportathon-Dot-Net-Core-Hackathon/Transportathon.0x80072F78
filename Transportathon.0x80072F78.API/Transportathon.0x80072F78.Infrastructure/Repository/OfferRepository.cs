@@ -47,9 +47,19 @@ public class OfferRepository : AsyncRepository<Offer>, IOfferRepository
                                                                 .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId))
                                                                 .Include(x => x.TransportationRequest)
                                                                 .Include(x => x.Company)
-                                                                .Include(x => x.User)
-                                                                .Include(x => x.Team)
                                                                 .Include(x => x.Vehicle).FirstOrDefaultAsync();
+        if (offerRequest == null) return null;
+        return offerRequest;
+    }
+
+    public async Task<Offer> GetOfferByIdIfApprovedAsync(Guid id)
+    {
+        Offer offerRequest = await _appDbContext.Offers.AsNoTracking()
+                                                                .Where(x => x.Id == id && x.UserId == Guid.Parse(_httpContextData.UserId))
+                                                                .Include(x => x.TransportationRequest)
+                                                                .Include(x => x.Company)
+                                                                .Include(x => x.Team).ThenInclude(t=> t.TeamWorkers)
+                                                                .Include(x => x.Vehicle).ThenInclude(t=> t.Driver).FirstOrDefaultAsync();
         if (offerRequest == null) return null;
         return offerRequest;
     }

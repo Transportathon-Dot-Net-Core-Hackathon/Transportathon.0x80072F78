@@ -90,6 +90,7 @@ public class MessageService : IMessageService
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
+
             return CustomResponse<List<MessageDTO>>.Fail(StatusCodes.Status400BadRequest, new List<string> { ex.Message });
         }
     }

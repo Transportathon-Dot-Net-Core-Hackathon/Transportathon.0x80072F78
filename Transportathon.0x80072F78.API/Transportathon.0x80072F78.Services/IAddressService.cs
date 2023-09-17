@@ -18,4 +18,6 @@ public interface IAddressService
     Task<CustomResponse<NoContent>> CreateAsync(AddressCreateDTO addressCreateDTO );
     Task<CustomResponse<AddressDTO>> GetByIdAsync(Guid id);
     Task<CustomResponse<List<AddressDTO>>> MyAddressesAsync();
+    Task<CustomResponse<List<AddressDTO>>> GetDestinationAddressesAsync();
+    Task<CustomResponse<List<AddressDTO>>> GetOutputAddressesAsync();
 }

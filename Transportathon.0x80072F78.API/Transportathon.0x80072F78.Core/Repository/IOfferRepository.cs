@@ -7,4 +7,5 @@ public interface IOfferRepository :IAsyncRepository<Offer>
 {
     Task<List<Offer>> GetAllOffersAsync(bool relational);
     Task<Offer> GetOfferByIdAsync(Guid id);
+    Task<Offer> GetOfferByIdIfApprovedAsync(Guid id);
 }

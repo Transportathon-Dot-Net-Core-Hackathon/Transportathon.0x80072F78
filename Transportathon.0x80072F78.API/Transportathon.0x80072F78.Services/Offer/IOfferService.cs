@@ -11,4 +11,5 @@ public interface IOfferService
     Task<CustomResponse<NoContent>> UpdateAsync(OfferUpdateDTO offerUpdateDTO);
     Task<CustomResponse<OfferDTO>> GetByIdAsync(Guid id);
     Task<CustomResponse<List<OfferDTO>>> MyOffersAsync();
+    Task<CustomResponse<OfferDTO>> ChangeOfferStatusAsync(StatusUpdateDTO statusUpdateDTO);
 }

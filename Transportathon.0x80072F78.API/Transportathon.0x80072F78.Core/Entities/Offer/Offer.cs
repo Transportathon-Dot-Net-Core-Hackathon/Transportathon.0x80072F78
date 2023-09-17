@@ -21,4 +21,10 @@ public class Offer : BaseEntity<Guid>
     public DateTime TransportationDate { get; set; }
     public DateTime OfferTime { get; set; }
     public DocumentStatus Status { get; set; }
+
+    #region Virtual Fields
+
+    public string? CompanyName { get; set; }
+
+    #endregion
 }

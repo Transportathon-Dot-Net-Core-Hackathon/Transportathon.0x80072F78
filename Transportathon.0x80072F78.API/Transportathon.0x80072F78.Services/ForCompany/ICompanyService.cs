@@ -19,4 +19,5 @@ public interface ICompanyService
     Task<CustomResponse<NoContent>> CreateAsync(CompanyCreateDTO companyCreateDTO);
     Task<CustomResponse<CompanyDTO>> GetByIdAsync(Guid id);
     Task<CustomResponse<List<CompanyDTO>>> MyCompainesAsync();
+    Task<CustomResponse<ViewCompanyDTO>> ViewCompanyAsync(Guid companyId);
 }
