@@ -26,17 +26,11 @@ public class FilterNode
     }
 }
 
-/// <summary>
-/// Verilen filter string değerini ayırarak FilterNode tree yapısını doldurur.
-/// Filtre ile ilgili detay FilterNode açıklamasında verilmiştir.
-/// 
-/// </summary>
 public class Parser
 {
     public const string SEPERATOR_L2_EXP = "##";
     public const string SEPERATOR_L1_EXP = "@@";
     public const string SEPERATOR_L2_WORDS = "::";
-    //OPERATOR_AND ve OPERATOR_OR aynı uzunlukta verilmelidir
     public const string OPERATOR_OR = "||";
     public const string OPERATOR_AND = "&&";
     public const string OPERATOR_EQUAL = "==";
@@ -51,7 +45,6 @@ public class Parser
 
     public FilterNode ParseFilter(IEntityType entityType, string filter)
     {
-        //KartTipi::==::1::##||KartTipi::==::2::@@&&IslemTipi::==::1::##||IslemTipi::==::2
         FilterNode parsedFilter = new();
         if (filter.Contains(SEPERATOR_L1_EXP) == false)
             filter += SEPERATOR_L1_EXP;
@@ -104,13 +97,11 @@ public class Parser
     {
         (Type type, object val) res = (typeof(string), val);
 
-        //string
         if (col.ClrType == typeof(string))
         {
             return res;
         }
 
-        //enum
         if (col.ClrType.BaseType == typeof(Enum) || Nullable.GetUnderlyingType(col.ClrType)?.IsEnum == true)
         {
             if (col.IsNullable)
@@ -127,7 +118,6 @@ public class Parser
             return res;
         }
 
-        //dateonly
         if (col.ClrType == typeof(DateOnly) || col.ClrType == typeof(DateOnly?))
         {
             res.type = typeof(DateOnly);
@@ -135,7 +125,6 @@ public class Parser
             return res;
         }
 
-        //bool
         if (col.ClrType == typeof(bool) || col.ClrType == typeof(bool?))
         {
             res.type = typeof(bool);
@@ -143,7 +132,6 @@ public class Parser
             return res;
         }
 
-        //short
         if (col.ClrType == typeof(short) || col.ClrType == typeof(short?))
         {
             res.type = typeof(short);
@@ -151,7 +139,6 @@ public class Parser
             return res;
         }
 
-        //int
         if (col.ClrType == typeof(int) || col.ClrType == typeof(int?))
         {
             res.type = typeof(int);
@@ -159,7 +146,6 @@ public class Parser
             return res;
         }
 
-        //float
         if (col.ClrType == typeof(float) || col.ClrType == typeof(float?))
         {
             res.type = typeof(float);
@@ -167,7 +153,6 @@ public class Parser
             return res;
         }
 
-        //decimal
         if (col.ClrType == typeof(decimal) || col.ClrType == typeof(decimal?))
         {
             res.type = typeof(decimal);
@@ -175,7 +160,6 @@ public class Parser
             return res;
         }
 
-        //Guid
         if (col.ClrType == typeof(Guid) || col.ClrType == typeof(Guid?))
         {
             res.type = typeof(Guid);
@@ -183,14 +167,6 @@ public class Parser
             return res;
         }
 
-        if (col.ClrType.Name == "OranType")
-        {
-            res.type = typeof(float);
-            res.val = float.Parse(val, new NumberFormatInfo() { NumberDecimalSeparator = "." });
-            return res;
-        }
-
-        //other -- TutarType, OranType,...
         res.type = typeof(decimal);
         res.val = decimal.Parse(val, new NumberFormatInfo() { NumberDecimalSeparator = "." });
 

@@ -5,16 +5,10 @@ namespace Transportathon._0x80072F78.Core.Infrastructure.FilterUtils;
 
 public class ExpressionBuilder<T>
 {
-    /// <summary>
-    /// Expression Parameter
-    /// Expression.Parameter(typeof(T), "x")
-    /// Use only this property(don't create new one) while expression building operations. 
-    /// </summary>
     private ParameterExpression _exprParameter;
 
     public ExpressionBuilder()
     {
-        //x => x.KartTipi ....
         _exprParameter = Expression.Parameter(typeof(T), "x");
     }
 
@@ -27,24 +21,6 @@ public class ExpressionBuilder<T>
         return predicate;
     }
 
-    /// <summary>
-    /// FilterNode kullanarak expression üretir. 
-    /// Filter yapısı ve formatı ile ilgili detaylı bilgi Parser altındaki FilterNode class açıklamalarında bulunmaktadır. 
-    /// 
-    /// Örnek Filter:
-    /// KartTipi::==::1::##||KartTipi::==::2::@@&&IslemTipi::==::1::##||IslemTipi::==::2@@&&KrediLimiti::>::600
-    /// ------  L2 ------    ------  L2 ------    ------  L2 -------    -----  L2 ------    ------  L2 --------
-    /// ----------------  L1 -----------------    ----------------  L1 -----------------    ------  L1 --------
-    /// 
-    /// KartTipi::==::1::##||KartTipi::==::2::@@&&IslemTipi::==::1::##||IslemTipi::==::2@@&&KrediLimiti::>::600
-    /// WHERE c."KartTipi" IN (1, 2) AND c."IslemTipi" IN (1, 2) AND c."KrediLimiti"::numeric > 600.0
-    /// 
-    /// Ad::!@::M002::@@&&KartTipi::==::1::##||IslemTipi::==::1
-    /// WHERE (strpos(c."Ad", 'M002') > 0) = FALSE AND (c."KartTipi" = 1 OR c."IslemTipi" = 1)
-    /// 
-    /// </summary>
-    /// <param name="rootNode"></param>
-    /// <returns></returns>
     private Expression<Func<T, bool>> ExpressionGenerator(FilterNode rootNode)
     {
         Expression expAggregatedLevel1 = null;
@@ -94,11 +70,10 @@ public class ExpressionBuilder<T>
 
     private Expression CreateExpressionFromFilter(FilterNode filterNode)
     {
-        BinaryExpression binaryExpression = null; //Eger binary olmuyorsa => Expression binaryExpression = null;
+        BinaryExpression binaryExpression = null;
         MemberExpression prop = Expression.PropertyOrField(_exprParameter, filterNode.Column.Name);
         UnaryExpression propConverted = Expression.Convert(prop, filterNode.ValueType);
         ConstantExpression value = Expression.Constant(filterNode.Value);
-        //UnaryExpression valConverted = Expression.Convert(value, typeof(object));
 
         switch (filterNode.Criteria)
         {
@@ -115,8 +90,6 @@ public class ExpressionBuilder<T>
             case Parser.OPERATOR_LESS_THAN_OR_EQUAL:
                 binaryExpression = Expression.LessThanOrEqual(propConverted, value); break;
             case Parser.OPERATOR_CONTAINS:
-                //var constainsExp = CreateContainsExpression(prop, value);
-                //binaryExpression = constainsExp; 
                 binaryExpression = CreateBinaryContainsExpression(prop, value); break;
             case Parser.OPERATOR_NOT_CONTAINS:
                 binaryExpression = CreateBinaryNotContainsExpression(prop, value);

@@ -9,28 +9,22 @@ public class Filter : IFilter
     public IQueryable<T> PrepareFilterQuery<T>(IEntityType entityType, IQueryable<T> query,
         string filter = "", string search = "", string sort = "") where T : class
     {
-        //Search
         if (string.IsNullOrWhiteSpace(search) == false)
         {
             var propertyNameList = GetColumnNamesByType(entityType, typeof(string));
             var predicate = SearchPredicateForBasicSearch<T>(propertyNameList, search);
             query = query.Where(predicate);
         }
-        //Filter
+
         if (string.IsNullOrWhiteSpace(filter) == false)
         {
-            //Yeni expression builder altyapısı
-            //KartTipi::==::1::##||KartTipi::==::2::@@&&IslemTipi::==::1::##||IslemTipi::==::2@@&&KrediLimiti::>::600
             ExpressionBuilder<T> expressionBuilder = new();
             var predicate = expressionBuilder.ExpressionGenerator(entityType, filter);
             query = query.Where(predicate);
         }
-        //Sort
+
         if (string.IsNullOrWhiteSpace(sort) == false)
         {
-            //siralama icin alinan kosullar
-            // UI tarafindan gelecek query string su sekilde olacaktir: https:///exampleService/col1::=@::ersin;col2::>::35;/col1::-1;col2::1
-            // bu ornek UI tarafinda hem filtreleme hem sort islemi yapilacagi zaman gonderilecektir. Kullanici sadece siralama yapmak isteyebilir.
             var parsedSortCriteria = ParseSortCriteria(entityType, sort);
             query = SearchPredicateForColumnSort(query, parsedSortCriteria);
         }
@@ -38,13 +32,6 @@ public class Filter : IFilter
         return query;
     }
 
-    /// <summary>
-    ///     Tüm string kolonlarda arama yapar
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="colNames"></param>
-    /// <param name="search"></param>
-    /// <returns></returns>
     private Expression<Func<T, bool>> SearchPredicateForBasicSearch<T>(List<string> colNames, string search)
     {
         var expressions = new List<Expression>();
@@ -65,24 +52,10 @@ public class Filter : IFilter
         return Expression.Lambda<Func<T, bool>>(expBody, parameterExpression);
     }
 
-    /// <summary>
-    ///     Parametre olarak query ve sort islemi yapilacak kolonlari ve kolonlara ait name,type ve siralama kriterleri
-    ///     bilgilerini alir.
-    ///     Sadece parametre olarak gecilen kolonlarda siralama yapilir. Kolonlardaki siralama da -1 ise descending 1 ise
-    ///     ascending olacak sekilde siralama yapilmasi saglanir.
-    ///     Parametre olarak birden fazla kolon gonderilmesi durumunda sadece 1. kolon icin sort kriterine gore
-    ///     orderby/orderbyDesc uygulanir.
-    ///     Diger kolonlar (2.,3., .. n.) sort kriterine gore thenby/thenbyDesc uygulanir.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="query"></param>
-    /// <param name="parsedSortCriteria"></param>
-    /// <returns></returns>
     private IQueryable<T> SearchPredicateForColumnSort<T>(IQueryable<T> query,
         List<(string sortColumnName, Type colType, string sortCriteria)> parsedSortCriteria)
     {
         var parameterExpression = Expression.Parameter(typeof(T));
-        //MethodInfo method;
 
         foreach (var sortCriteria in parsedSortCriteria)
         {
@@ -90,7 +63,6 @@ public class Filter : IFilter
             var constant = Expression.Constant(sortCriteria.sortCriteria);
             if (sortCriteria == parsedSortCriteria[0] && sortCriteria.sortCriteria.Equals("-1"))
             {
-                //1. yol.
                 var orderByDescendingLambda = Expression.Lambda(property, parameterExpression);
                 var queryExpression = query.Expression;
 
@@ -102,15 +74,6 @@ public class Filter : IFilter
                     }, queryExpression, Expression.Quote(orderByDescendingLambda));
 
                 query = query.Provider.CreateQuery<T>(OrderByDescExpression);
-
-                //2.yol
-                //LambdaExpression orderByDescendingLambda = Expression.Lambda(property, parameterExpression);
-
-                //MethodInfo orderByMethod = typeof(Queryable).GetMethods().Where(k => k.Name.Equals(nameof(Queryable.OrderByDescending))).Where(k => k.GetParameters().Length == 2).Single();
-
-                //method = orderByMethod.MakeGenericMethod(new[] { typeof(T), sortCriteria.colType });
-
-                //query = (IQueryable<T>)(method.Invoke(null, new object[] { query, orderByDescendingLambda }));
             }
             else if (sortCriteria == parsedSortCriteria[0] && sortCriteria.sortCriteria.Equals("1"))
             {
