@@ -26,10 +26,8 @@ public class ExpressionBuilder<T>
         Expression expAggregatedLevel1 = null;
         List<FilterNode> childrenLevel1 = rootNode.Children.Count > 0 ? rootNode.Children : new List<FilterNode>();
 
-        //L1 expression'lar, L2 expression'ları birleştirmek için kullanılır
         foreach (FilterNode childNodeL1 in childrenLevel1)
         {
-            //L2 expression'lar, asıl sorguların tanımlı olduğu expression'lardır
             Expression expAggregatedLevel2 = null;
 
             foreach (FilterNode childNodeL2 in childNodeL1.Children)
